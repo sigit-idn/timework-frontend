@@ -103,12 +103,12 @@ const Task = ({
               >
                 {isEditing ? "Save" : "Edit"}
               </button>
-              <button
+              {/* <button
                 className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-indigo-500 hover:bg-indigo-600 mr-1 text-white cursor-pointer"
                 onClick={addTask}
               >
                 Add
-              </button>
+              </button> */}
               <button
                 className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-red-500 hover:bg-red-600 text-white cursor-pointer"
                 onClick={deleteTask}

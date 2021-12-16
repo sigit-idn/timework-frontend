@@ -31,29 +31,32 @@ const Task = ({
   const editTask = () => setIsEditingTask(true);
 
   const workTask = () =>
-    is_working
-      ? setIsPostponingTask(true)
-      : authFetch
-          .put("/v1/task/work/" + _id)
-          .then((res: any) => setTasks(res.data.tasks));
+    authFetch.put("/v1/task/work/" + _id).then((res: any) => {
+      setTasks(res.data.tasks);
+    });
 
   useEffect(
     (): any => finishedTasks && dataKey === 0 && workTask(),
     [finishedTasks]
   );
 
-  const finishTask = () => {
-    authFetch.post("/v1/report/task", {
-      task_start: localStorage.getItem("task_start"),
-      task_end: new Date(),
-      title,
-      description,
-    });
+  const finishTask = async () => {
+    try {
+      authFetch.post("/v1/report/task", {
+        task_start: localStorage.getItem("task_start"),
+        task_end: new Date(),
+        title,
+        description,
+      });
 
-    authFetch.delete("/v1/task/" + _id).then(() => {
+      const res: any = await authFetch.delete("/v1/task/" + _id);
+
+      setTasks(res.data.tasks);
       localStorage.setItem("task_start", new Date().toLocaleString());
       setFinishedTasks(finishedTasks + 1);
-    });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -103,7 +106,9 @@ const Task = ({
                   Edit
                 </button>
                 <button
-                  onClick={workTask}
+                  onClick={() =>
+                    is_working ? setIsPostponingTask(true) : workTask()
+                  }
                   className="px-1 py-1 w-1/4 rounded cursor-pointer mr-1 bg-indigo-500 hover:bg-indigo-600"
                 >
                   {is_working ? "Postpone" : "Work"}
@@ -119,7 +124,7 @@ const Task = ({
           </div>
         </div>
       </div>
-      {isEditingTask ? (
+      {isEditingTask && (
         <EditTask
           setIsEditingTask={setIsEditingTask}
           setTasks={setTasks}
@@ -128,10 +133,8 @@ const Task = ({
           description={description}
           _id={_id}
         />
-      ) : (
-        ""
       )}
-      {isPostponingTask ? (
+      {isPostponingTask && (
         <PostponeTask
           setIsPostponingTask={setIsPostponingTask}
           setTasks={setTasks}
@@ -140,8 +143,6 @@ const Task = ({
           description={description}
           _id={_id}
         />
-      ) : (
-        ""
       )}
     </>
   );

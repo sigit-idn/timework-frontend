@@ -55,12 +55,17 @@ const Login = () => {
           <div className="bottom-0 absolute p-4 text-center right-0 left-0 flex justify-center space-x-4"></div>
         </div>
         <div className="lg:w-1/2 w-full flex items-center justify-center text-center md:px-16 px-0 z-0 bg-gray-800">
-          <div className="absolute lg:hidden z-10 inset-0 bg-gray-500 bg-no-repeat bg-cover items-center">
+          <div
+            className="absolute lg:hidden z-10 inset-0 bg-gray-500 bg-no-repeat bg-cover items-center"
+            style={{ backgroundImage: `url(${bgLogin})` }}
+          >
             <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
           </div>
           <div className="w-full py-6 z-20">
             <h1 className="my-6">
-              <p className="text-gray-100 text-5xl">Please Login</p>
+              <p className="text-gray-100 text-5xl font-extralight">
+                Please Login
+              </p>
             </h1>
 
             <form

@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom"
 
 const useAuthFetch = () => {
 	const BASE_URL = "https://api-timework.herokuapp.com"
-	// const BASE_URL = "https://api-timework.netlify.app"
 	const redirect = useNavigate()
 	const innerFetch = (url: string, method: string, mimeType?: string, body?: object) =>
 		new Promise(async (resolve, reject) => {
@@ -23,11 +22,8 @@ const useAuthFetch = () => {
 
 	return {
 		get: (url: string) => innerFetch(url, "GET"),
-
 		post: (url: string, body?: any) => innerFetch(url, "POST", "application/json", body),
-
 		put: (url: string, body?: any) => innerFetch(url, "PUT", "application/json", body),
-
 		delete: (url: string) => innerFetch(url, "DELETE")
 	}
 }

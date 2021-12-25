@@ -18,6 +18,7 @@ const Login = () => {
     await fetch("https://api-timework.herokuapp.com/v1/auth/login", {
       // await fetch("http://localhost:3000/v1/auth/login", {
       method: "POST",
+      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },

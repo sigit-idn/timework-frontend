@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import bgLogin from "../bg-login.jpg";
 
@@ -11,14 +11,13 @@ const Login = () => {
     setInput({ ...input, [event.target.name]: event.target.value });
   };
 
-  localStorage.clear();
+  useEffect(() => localStorage.clear(), []);
 
   const handlerSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await fetch("https://api-timework.herokuapp.com/v1/auth/login", {
-      // await fetch("http://localhost:3000/v1/auth/login", {
+    // await fetch("https://api-timework.herokuapp.com/v1/auth/login", {
+    await fetch("http://localhost:3000/v1/auth/login", {
       method: "POST",
-      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
@@ -26,6 +25,7 @@ const Login = () => {
     })
       .then(async (res) => {
         const { data } = await res.json();
+
         for (let key in data) {
           localStorage.setItem(key, data[key]);
         }

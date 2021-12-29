@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom"
 
 const useAuthFetch = () => {
-	const BASE_URL = "https://api-timework.herokuapp.com"
+	// const BASE_URL = "https://api-timework.herokuapp.com"
+	const BASE_URL = "http://localhost:3000"
 	const redirect = useNavigate()
 	const innerFetch = (url: string, method: string, mimeType?: string, body?: object) =>
 		new Promise(async (resolve, reject) => {

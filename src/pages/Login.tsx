@@ -15,8 +15,8 @@ const Login = () => {
 
   const handlerSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // await fetch("https://api-timework.herokuapp.com/v1/auth/login", {
-    await fetch("http://localhost:3000/v1/auth/login", {
+    await fetch("https://api-timework.herokuapp.com/v1/auth/login", {
+      // await fetch("http://localhost:3000/v1/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

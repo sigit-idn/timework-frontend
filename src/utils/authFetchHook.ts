@@ -1,23 +1,23 @@
 import { useNavigate } from "react-router-dom"
 
 const useAuthFetch = () => {
-	const BASE_URL = "https://api-timework.herokuapp.com"
-	// const BASE_URL = "http://localhost:3000"
+	const BASE_URL = process.env.REACT_APP_API_URL
 	const redirect = useNavigate()
 	const innerFetch = (url: string, method: string, mimeType?: string, body?: object) =>
-		new Promise(async (resolve, reject) => {
+		new Promise(async (resolve) => {
 			const headers = {
 				"Content-Type": `${mimeType}`,
-				authorization: "Bearer " + localStorage?.token,
 			}
 
-			const options = body ? { body: JSON.stringify(body), method, headers } : { method, headers }
-
-			const res = await fetch(BASE_URL + url, options)
+			const res = await fetch(BASE_URL + url, {
+				method,
+				headers,
+				body: JSON.stringify(body),
+				credentials: "include",
+			})
 
 			if (res.status !== 403) return resolve(await res.json())
 
-			localStorage.clear()
 			redirect("/login")
 		})
 

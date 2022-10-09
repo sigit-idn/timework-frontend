@@ -37,7 +37,7 @@ const PostponeTask = ({
   const postponeTask = (event: any) => {
     event.preventDefault();
     authFetch
-      .post("/v1/report/task", body)
+      .post("/reports/task", body)
       .then((res: any) => setIsPostponingTask(false) & setTasks(res.data.tasks))
       .catch((url) => redirect(url));
   };

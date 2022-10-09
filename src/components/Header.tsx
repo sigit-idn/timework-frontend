@@ -13,7 +13,7 @@ const Header: FunctionComponent<Props> = ({ setSidebarOpen }) => {
   const { tasks, setTasks } = useContext(TaskContext);
 
   useEffect(() => {
-    authFetch.get("/v1/task").then((res: any) => {
+    authFetch.get("/tasks").then((res: any) => {
       const { data } = res;
 
       setTasks(data);

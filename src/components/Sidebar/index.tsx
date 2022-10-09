@@ -54,7 +54,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: any) => {
             </svg>
 
             <span className="text-white text-2xl mx-2 font-semibold">
-              Dashboard
+              Time Work
             </span>
           </div>
         </div>

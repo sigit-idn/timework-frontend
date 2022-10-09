@@ -6,7 +6,7 @@ const Friends: FunctionComponent = () => {
   const authFetch = useAuthFetch();
   const [friends, setFriends] = useState([]);
   useEffect(() => {
-    authFetch.get("/v1/employee").then((res: any) => setFriends(res.data));
+    authFetch.get("/employees").then((res: any) => setFriends(res.data));
   }, []);
   return (
     <div className="flex flex-col mt-8">

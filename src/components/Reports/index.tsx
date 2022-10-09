@@ -14,7 +14,7 @@ const Reports = () => {
 
   useEffect(() => {
     authFetch
-      .get(`/v1/report?${userId ? "userId=" + userId + "&" : ""}month=` + month)
+      .get(`/report?${userId ? "userId=" + userId + "&" : ""}month=` + month)
       .then((res: any) => {
         const { data } = res;
 

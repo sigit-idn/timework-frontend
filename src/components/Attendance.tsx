@@ -14,7 +14,7 @@ const Attendance = () => {
   useEffect(() => {
     authFetch
       .get(
-        `/v1/attendance?${userId ? "userId=" + userId + "&" : ""}month=` + month
+        `/attendance?${userId ? "userId=" + userId + "&" : ""}month=` + month
       )
       .then((res: any) => {
         const { data } = res;

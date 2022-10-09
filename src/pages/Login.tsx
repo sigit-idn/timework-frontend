@@ -6,6 +6,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [input, setInput] = useState({});
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
   const handlerChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [event.target.name]: event.target.value });
@@ -15,12 +16,15 @@ const Login = () => {
 
   const handlerSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await fetch("https://api-timework.herokuapp.com/v1/auth/login", {
-      // await fetch("http://localhost:3000/v1/auth/login", {
+
+    setIsSigningIn(true);
+
+    await fetch(process.env.REACT_APP_API_URL + "/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(input),
     })
       .then(async (res) => {
@@ -32,17 +36,15 @@ const Login = () => {
 
         navigate("/");
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setIsSigningIn(false));
   };
 
   return (
     <div>
       <section className="min-h-screen flex items-stretch text-white ">
         <div
-          className="lg:flex w-1/2 hidden bg-gray-800 bg-no-repeat bg-cover relative items-center"
-          style={{
-            backgroundImage: `url(${bgLogin})`,
-          }}
+          className={`lg:flex w-1/2 hidden bg-gray-800 bg-no-repeat bg-cover relative items-center [background-image:url('${bgLogin}')]`}
         >
           <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
           <div className="w-full px-24 z-10">
@@ -57,8 +59,7 @@ const Login = () => {
         </div>
         <div className="lg:w-1/2 w-full flex items-center justify-center text-center md:px-16 px-0 z-0 bg-gray-800">
           <div
-            className="absolute lg:hidden z-10 inset-0 bg-gray-500 bg-no-repeat bg-cover items-center"
-            style={{ backgroundImage: `url(${bgLogin})` }}
+            className={`absolute lg:hidden z-10 inset-0 bg-gray-500 bg-no-repeat bg-cover items-center [background-image:url(${bgLogin})]`}
           >
             <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
           </div>
@@ -94,8 +95,14 @@ const Login = () => {
                 />
               </div>
               <div className="px-4 pb-2 pt-4">
-                <button className="uppercase block w-full p-4 text-lg rounded-full bg-indigo-500 hover:bg-indigo-600 focus:outline-none">
-                  Login
+                <button 
+                  className={
+                    `uppercase block w-full p-4 text-lg rounded-full focus:outline-none ${isSigningIn ? "bg-gray-500" : "bg-indigo-500 hover:bg-indigo-600"}`
+                  }
+                  type="submit"
+                  disabled={isSigningIn}
+                  >
+                    Login
                 </button>
               </div>
             </form>

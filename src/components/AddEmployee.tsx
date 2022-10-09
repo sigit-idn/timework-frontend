@@ -38,7 +38,7 @@ const AddEmployee = () => {
   useEffect(
     (): any =>
       authFetch
-        .get("/v1/employee/" + userId)
+        .get("/employee/" + userId)
         .then((res: any) => setUserData(res.data)),
     []
   );
@@ -48,16 +48,16 @@ const AddEmployee = () => {
 
     if (userId) {
       return authFetch
-        .put("/v1/employee/" + userId, body)
+        .put("/employee/" + userId, body)
         .then((res) => console.log(res));
     } else {
-      authFetch.post("/v1/employee", body).then((res) => console.log(res));
+      authFetch.post("/employee", body).then((res) => console.log(res));
     }
   };
 
   const deleteEmployee = () => {
     if (window.confirm("Are you sure to delete an employee?"))
-      authFetch.delete("/v1/employee/" + userId).then(() => navigate(-1));
+      authFetch.delete("/employee/" + userId).then(() => navigate(-1));
   };
 
   return (

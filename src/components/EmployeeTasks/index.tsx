@@ -19,7 +19,7 @@ const EmployeeTask: FunctionComponent = () => {
   const [isAddingTask, setIsAddingTask] = useState(false);
 
   useEffect(() => {
-    authFetch.get("/v1/task?user-id=" + userId).then((res: any) => {
+    authFetch.get("/tasks?user-id=" + userId).then((res: any) => {
       const { data } = res;
       setTasks(data);
     });

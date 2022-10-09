@@ -21,15 +21,10 @@ const Dashboard = () => {
   setInterval(() => setClock(new Date().toLocaleTimeString()), 1000);
 
   useEffect(() => {
-    authFetch.get("/v1/attendance").then((res: any) => {
-      const { data } = res;
-      setAttendances(
-        data.find(
-          (datum: any) =>
-            new Date(datum.date).toLocaleDateString() ===
-            new Date().toLocaleDateString()
-        )
-      );
+    authFetch.get("/attendances?date=" + new Date().toISOString().split("T")[0])
+    .then(([data]: any) => {
+      
+      setAttendances(data);
 
       // setCta((data && Object.keys(data).length - 1) ?? 1);
       setTaskStart(new Date());

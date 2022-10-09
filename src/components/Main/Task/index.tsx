@@ -24,14 +24,14 @@ const Task = ({
   const deleteTask = () => {
     if (window.confirm("Are you sure to delete?"))
       authFetch
-        .delete("/v1/task/" + _id)
+        .delete("/tasks/" + _id)
         .then((res: any) => setTasks(res.data.tasks));
   };
 
   const editTask = () => setIsEditingTask(true);
 
   const workTask = () =>
-    authFetch.put("/v1/task/work/" + _id).then((res: any) => {
+    authFetch.put("/tasks/work/" + _id).then((res: any) => {
       setTasks(res.data.tasks);
     });
 
@@ -42,14 +42,14 @@ const Task = ({
 
   const finishTask = async () => {
     try {
-      authFetch.post("/v1/report/task", {
+      authFetch.post("/reports/task", {
         task_start: localStorage.getItem("task_start"),
         task_end: new Date(),
         title,
         description,
       });
 
-      const res: any = await authFetch.delete("/v1/task/" + _id);
+      const res: any = await authFetch.delete("/tasks/" + _id);
 
       setTasks(res.data.tasks);
       localStorage.setItem("task_start", new Date().toLocaleString());

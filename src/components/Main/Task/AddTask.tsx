@@ -13,10 +13,15 @@ const AddTask = ({ setIsAddingTask, userId, name }: any) => {
   const addTask = (event: FormEvent) => {
     event.preventDefault();
     authFetch
-      .post(`/v1/task${userId ? "?user-id=" + userId : ""}`, body)
+      .post(`/tasks`, body)
       .then((res: any) => {
-        setIsAddingTask(false);
         setTasks(res.data.tasks);
+      })
+      .catch((err: any) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsAddingTask(false);
       });
   };
 

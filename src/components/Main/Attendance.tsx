@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import useAuthFetch from "../../utils/authFetchHook";
 
@@ -16,27 +16,37 @@ const Attendance = ({
   const formatTime = (time: string) => new Date(time).toLocaleTimeString();
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [time, setTime] = useState<string>("");
+  
+  (String as any).prototype.camelize = function () {
+    return this.replace(/_(\w)/g, (_: string, p1: string) => p1.toUpperCase());
+  };
+
   useEffect(() => {
-    setIsClicked(Boolean(attendances && attendances[name]));
-    setTime(formatTime(attendances && attendances[name]));
+
+    setIsClicked(Boolean(attendances && attendances[name.camelize()]));
+    setTime(formatTime(attendances && attendances[name.camelize()]));
+    console.log({attendances, name, time});
+    
   }, [attendances, name]);
 
   useEffect(() => {
     if (cta === dataKey && isClicked) setCta(dataKey + 1);
   }, [cta, isClicked, dataKey, setCta]);
 
-  const attend = () => {
+  const attend = useCallback(() => {
     authFetch
-      .post("/v1/attendance/" + name)
+      .post("/attendances/" + name)
       .then((res: any) => {
-        const { data } = res;
-        setTime(formatTime(data[name]));
+        console.log({res});
+        
+        setTime(formatTime(res[name.camelize()]));
         setIsClicked(true);
         if (name === "work_start")
           localStorage.setItem("task_start", new Date().toLocaleString());
       })
       .catch((url) => redirect(url));
-  };
+  }, []);
+
   return (
     <div onClick={attend} className="mt-3 px-2 w-1/2 cursor-pointer">
       <div

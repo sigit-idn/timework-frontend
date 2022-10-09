@@ -24,14 +24,14 @@ const Task = ({
     setIsEditing(!isEditing);
     if (isEditing)
       authFetch
-        .put(`/v1/report/${report_id}/${_id}`, editData)
+        .put(`/reports/${report_id}/${_id}`, editData)
         .then((res: any) => setReports(res.data.reports));
   };
 
   const deleteTask = () => {
     if (window.confirm("Are you sure to delete task from report?"))
       authFetch
-        .delete(`/v1/report/${report_id}/${_id}`)
+        .delete(`/reports/${report_id}/${_id}`)
         .then((res: any) => setReports(res.data.reports));
   };
 

@@ -19,7 +19,7 @@ const Report = ({
 
     if (isEditing)
       authFetch
-        .put("/v1/report/" + report_id, {
+        .put("/reports/" + report_id, {
           notes: editNotes,
         })
         .then((res: any) => setReports(res.data.reports));

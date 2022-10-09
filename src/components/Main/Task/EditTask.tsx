@@ -26,7 +26,7 @@ const EditTask = ({
   const editTask = (event: FormEvent) => {
     event.preventDefault();
     authFetch
-      .put("/v1/task/" + _id, body)
+      .put("/tasks/" + _id, body)
       .then((res: any) => setIsEditingTask(false) & setTasks(res.data.tasks));
   };
 

@@ -3,15 +3,15 @@ import { TaskContext } from "../../config/contexts";
 import useAuthFetch from "../../utils/authFetchHook";
 
 const Task = ({
-  task_start,
-  task_end,
+  taskStart,
+  taskEnd,
   title,
   addTask,
   setReports,
   description,
-  _id,
+  id,
   isAdding,
-  report_id,
+  reportId,
 }: any) => {
   const authFetch = useAuthFetch();
   const [isEditing, setIsEditing] = useState(false);
@@ -24,14 +24,14 @@ const Task = ({
     setIsEditing(!isEditing);
     if (isEditing)
       authFetch
-        .put(`/reports/${report_id}/${_id}`, editData)
+        .put(`/reports/${reportId}/${id}`, editData)
         .then((res: any) => setReports(res.data.reports));
   };
 
   const deleteTask = () => {
     if (window.confirm("Are you sure to delete task from report?"))
       authFetch
-        .delete(`/reports/${report_id}/${_id}`)
+        .delete(`/reports/${reportId}/${id}`)
         .then((res: any) => setReports(res.data.reports));
   };
 
@@ -44,11 +44,11 @@ const Task = ({
               <>
                 <div className="text-sm leading-5 mb-2 text-indigo-500">
                   <input
-                    name="task_start"
+                    name="taskStart"
                     onChange={changeHandler}
                     className="text-sm bg-gray-50 px-1 py-2 rounded ring-1 outline-none border-0 focus:ring-indigo-500 ring-gray-200"
                     type="time"
-                    defaultValue={new Date(task_start)
+                    defaultValue={new Date(taskStart)
                       .toLocaleTimeString()
                       .match(/\d{1,2}:\d{1,2}/)
                       ?.join("")
@@ -57,11 +57,11 @@ const Task = ({
                   />
                   〜
                   <input
-                    name="task_end"
+                    name="taskEnd"
                     onChange={changeHandler}
                     className="text-sm bg-gray-50 px-1 py-2 rounded ring-1 outline-none border-0 focus:ring-indigo-500 ring-gray-200"
                     type="time"
-                    defaultValue={new Date(task_end)
+                    defaultValue={new Date(taskEnd)
                       .toLocaleTimeString()
                       .match(/\d{1,2}:\d{1,2}/)
                       ?.join("")
@@ -85,8 +85,8 @@ const Task = ({
             ) : (
               <>
                 <div className="text-sm leading-5 mb-2 text-indigo-500">
-                  {new Date(task_start).toLocaleTimeString().match(/.+(?=:)/)}〜
-                  {new Date(task_end).toLocaleTimeString().match(/.+(?=:)/)}
+                  {new Date(taskStart).toLocaleTimeString().match(/.+(?=:)/)}〜
+                  {new Date(taskEnd).toLocaleTimeString().match(/.+(?=:)/)}
                 </div>
                 <h3 className="text-sm leading-5 mb-2 font-medium text-gray-900">
                   {title}
@@ -103,12 +103,6 @@ const Task = ({
               >
                 {isEditing ? "Save" : "Edit"}
               </button>
-              {/* <button
-                className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-indigo-500 hover:bg-indigo-600 mr-1 text-white cursor-pointer"
-                onClick={addTask}
-              >
-                Add
-              </button> */}
               <button
                 className="px-2 inline-flex text-xs leading-5 font-semibold rounded bg-red-500 hover:bg-red-600 text-white cursor-pointer"
                 onClick={deleteTask}

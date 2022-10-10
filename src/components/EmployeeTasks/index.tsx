@@ -1,16 +1,16 @@
 import { ArrowLeft } from "@geist-ui/react-icons";
 import { FunctionComponent } from "react";
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { useLocation } from "react-router-dom";
 import useAuthFetch from "../../utils/authFetchHook";
 import Task from "../Main/Task";
 import AddTask from "../Main/Task/AddTask";
 
 const EmployeeTask: FunctionComponent = () => {
   const authFetch = useAuthFetch();
-  const { pathname, state: name } = useLocation();
-
-  const userId = pathname.match(/\w{24}$/);
+  const { id } = useParams();
+  const { state: name } = useLocation();
 
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
@@ -19,8 +19,7 @@ const EmployeeTask: FunctionComponent = () => {
   const [isAddingTask, setIsAddingTask] = useState(false);
 
   useEffect(() => {
-    authFetch.get("/tasks?user-id=" + userId).then((res: any) => {
-      const { data } = res;
+    authFetch.get("/tasks?employeeId=" + id).then((data: any) => {
       setTasks(data);
     });
   }, []);
@@ -76,7 +75,7 @@ const EmployeeTask: FunctionComponent = () => {
 
         {isAddingTask ? (
           <AddTask
-            userId={userId}
+            userId={id}
             name={name}
             setTasks={setTasks}
             setIsAddingTask={setIsAddingTask}

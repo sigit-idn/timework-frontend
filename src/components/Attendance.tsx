@@ -6,24 +6,16 @@ import useAuthFetch from "../utils/authFetchHook";
 const Attendance = () => {
   const navigate = useNavigate();
   const { pathname, state } = useLocation();
-  const userId = pathname.match(/\w{24}/);
+  const [userId, setUserId] = useState("");
   const [attendances, setAttendances] = useState([]);
-  const [month, setMonth] = useState(new Date().toLocaleDateString());
+  const [month, setMonth] = useState(new Date().toLocaleDateString().replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"));
   const authFetch = useAuthFetch();
 
   useEffect(() => {
     authFetch
-      .get(
-        `/attendance?${userId ? "userId=" + userId + "&" : ""}month=` + month
-      )
-      .then((res: any) => {
-        const { data } = res;
-
-        setAttendances(
-          data.sort((a: any, b: any) =>
-            new Date(a.date).getTime() > new Date(b.date).getTime() ? 1 : -1
-          )
-        );
+      .get(`/attendances?${userId ? `userId=${userId}&` : ""}month=` + month)
+      .then((data: any) => {
+        setAttendances(data);
       });
   }, [month]);
 
@@ -51,7 +43,7 @@ const Attendance = () => {
           <input
             id="dateInput"
             onChange={({ target }: ChangeEvent<HTMLInputElement>) =>
-              setMonth(new Date(target.value).toLocaleDateString())
+              setMonth(target.value.replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"))
             }
             className="border-0 bg-transparent text-sm"
             type="month"
@@ -96,16 +88,16 @@ const Attendance = () => {
                 {attendances.map(
                   ({
                     date,
-                    work_start,
-                    break_start,
-                    break_end,
-                    work_end,
+                    workStart,
+                    breakStart,
+                    breakEnd,
+                    workEnd,
                   }: any) => {
                     const workSeconds =
-                      new Date(work_end).getTime() -
-                      new Date(work_start).getTime() +
-                      new Date(break_start).getTime() -
-                      new Date(break_end).getTime();
+                      new Date(workEnd).getTime() -
+                      new Date(workStart).getTime() +
+                      new Date(breakStart).getTime() -
+                      new Date(breakEnd).getTime();
 
                     return (
                       <tr>
@@ -114,32 +106,32 @@ const Attendance = () => {
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
-                          {work_start ? (
-                            new Date(work_start).toLocaleTimeString()
+                          {workStart ? (
+                            new Date(workStart).toLocaleTimeString()
                           ) : (
                             <span className="text-gray-500">Unset</span>
                           )}
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
-                          {break_start ? (
-                            new Date(break_start).toLocaleTimeString()
+                          {breakStart ? (
+                            new Date(breakStart).toLocaleTimeString()
                           ) : (
                             <span className="text-gray-500">Unset</span>
                           )}
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
-                          {break_end ? (
-                            new Date(break_end).toLocaleTimeString()
+                          {breakEnd ? (
+                            new Date(breakEnd).toLocaleTimeString()
                           ) : (
                             <span className="text-gray-500">Unset</span>
                           )}
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
-                          {work_end ? (
-                            new Date(work_end).toLocaleTimeString()
+                          {workEnd ? (
+                            new Date(workEnd).toLocaleTimeString()
                           ) : (
                             <span className="text-gray-500">Unset</span>
                           )}

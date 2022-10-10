@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import AddTask from "../components/Main/Task/AddTask";
 import Attendance from "../components/Main/Attendance";
 import Task from "../components/Main/Task";
+import { Task as TaskInterface } from "../interfaces/task";
 import useAuthFetch from "../utils/authFetchHook";
 import useAuthorization from "../utils/authourizationHook";
 import { TaskContext } from "../config/contexts";
@@ -12,16 +13,17 @@ const Dashboard = () => {
   const authorize = useAuthorization();
   const authFetch = useAuthFetch();
   const { tasks } = useContext(TaskContext);
-  authorize("employee");
   const [attendances, setAttendances] = useState({});
   const [finishedTasks, setFinishedTasks] = useState(0);
   const [taskStart, setTaskStart] = useState(new Date());
   const [isAddingTask, setIsAddingTask] = useState(false);
-
+  
   setInterval(() => setClock(new Date().toLocaleTimeString()), 1000);
-
+  
   useEffect(() => {
-    authFetch.get("/attendances?date=" + new Date().toISOString().split("T")[0])
+    authorize("employee");
+
+    authFetch.get("/attendances?date=" + new Date().toLocaleDateString().replace(/\//g, "-"))
     .then(([data]: any) => {
       
       setAttendances(data);
@@ -81,14 +83,10 @@ const Dashboard = () => {
       <h3 className="text-gray-700 text-3xl mt-7">Tasks</h3>
       <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-3 gap-3">
         {tasks
-          ?.sort((a: any, b: any) =>
-            new Date(a.deadline).getTime() > new Date(b.deadline).getTime()
-              ? 1
-              : -1
-          )
-          .map(
+          ?.filter(({ taskEnd }: TaskInterface) => !taskEnd)
+          ?.map(
             (
-              { deadline, title, description, is_working, _id }: any,
+              { deadline, title, description, reportId, isWorking, id }: TaskInterface,
               i: number
             ) => (
               <Task
@@ -99,10 +97,11 @@ const Dashboard = () => {
                 finishedTasks={finishedTasks}
                 setFinishedTasks={setFinishedTasks}
                 description={description}
-                is_working={is_working}
+                isWorking={isWorking}
+                reportId={reportId}
                 taskStart={taskStart}
                 setTaskStart={setTaskStart}
-                _id={_id}
+                id={id}
               />
             )
           )}

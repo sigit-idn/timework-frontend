@@ -1,20 +1,9 @@
 import { createContext } from "react";
-
-type Task = [{
-	title: string,
-	is_working: false,
-	deadline: string,
-	description: string
-}]
+import { Task } from "../interfaces/task";
 
 const TaskContext = createContext({
-	tasks: [{
-		title: "",
-		is_working: false,
-		deadline: "",
-		description: ""
-	}],
-	setTasks(tasks: Task) { }
+	tasks: [] as Task[],
+	setTasks(tasks: Task[]) { }
 })
 
 export { TaskContext };

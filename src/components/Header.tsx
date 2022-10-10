@@ -1,6 +1,7 @@
 import { Bell } from "@geist-ui/react-icons";
 import { FunctionComponent, useContext, useEffect, useState } from "react";
 import { TaskContext } from "../config/contexts";
+import { Task } from "../interfaces/task";
 import useAuthFetch from "../utils/authFetchHook";
 
 interface Props {
@@ -13,9 +14,7 @@ const Header: FunctionComponent<Props> = ({ setSidebarOpen }) => {
   const { tasks, setTasks } = useContext(TaskContext);
 
   useEffect(() => {
-    authFetch.get("/tasks").then((res: any) => {
-      const { data } = res;
-
+    authFetch.get("/tasks").then((data: any) => {
       setTasks(data);
     });
   }, []);
@@ -55,7 +54,7 @@ const Header: FunctionComponent<Props> = ({ setSidebarOpen }) => {
         </div>
         <div className="text-indigo-600 text-lg truncate px-2 flex-1">
           {
-            tasks?.find(({ is_working }: { is_working: boolean }) => is_working)
+            tasks?.find(({ isWorking }: Task) => isWorking)
               ?.title
           }
         </div>
@@ -76,9 +75,9 @@ const Header: FunctionComponent<Props> = ({ setSidebarOpen }) => {
               <path
                 d="M4 6H20M4 12H20M4 18H11"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               ></path>
             </svg>
           </button>

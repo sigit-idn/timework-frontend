@@ -1,55 +1,61 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { TaskContext } from "../../../config/contexts";
+import { Task as TaskInterface } from "../../../interfaces/task"; 
 import useAuthFetch from "../../../utils/authFetchHook";
 import EditTask from "./EditTask";
-import PostponeTask from "./PostponeTask";
 
 const Task = ({
   title,
   deadline,
   description,
-  is_working,
+  isWorking,
+  reportId,
   finishedTasks,
   setFinishedTasks,
-  _id,
+  id,
   dataKey,
 }: any) => {
-  const { setTasks } = useContext(TaskContext);
+  const { tasks, setTasks } = useContext(TaskContext);
 
   const authFetch = useAuthFetch();
   const { pathname } = useLocation();
   const [isEditingTask, setIsEditingTask] = useState(false);
-  const [isPostponingTask, setIsPostponingTask] = useState(false);
+  
   const deleteTask = () => {
     if (window.confirm("Are you sure to delete?"))
       authFetch
-        .delete("/tasks/" + _id)
-        .then((res: any) => setTasks(res.data.tasks));
+        .delete("/tasks/" + id)
+        .then(() => setTasks(tasks?.filter(({ id: taskId }: TaskInterface) => id != taskId)));
   };
 
   const editTask = () => setIsEditingTask(true);
 
-  const workTask = () =>
-    authFetch.put("/tasks/work/" + _id).then((res: any) => {
-      setTasks(res.data.tasks);
+  const startTask = () =>
+    authFetch.post(`/tasks/${id}/start`).then(() => {
+      setTasks(
+        tasks?.map((task: TaskInterface, i: number) =>
+          i == dataKey ? { ...task, isWorking: true } : { ...task, isWorking: false }
+        )
+      );
     });
 
   useEffect(
-    (): any => finishedTasks && dataKey === 0 && workTask(),
+    (): any => finishedTasks && dataKey === 0 && startTask(),
     [finishedTasks]
   );
 
-  const finishTask = async () => {
+  const finishTask = useCallback(async () => {
     try {
-      authFetch.post("/reports/task", {
-        task_start: localStorage.getItem("task_start"),
-        task_end: new Date(),
-        title,
-        description,
+      authFetch.post(`/tasks/${id}/finish`).then(() => {
+        setTasks(
+          tasks?.filter((task: TaskInterface) => task.id != id)
+        );
+        
+        setFinishedTasks(finishedTasks + 1);
       });
 
-      const res: any = await authFetch.delete("/tasks/" + _id);
+      const res: any = await authFetch.delete("/tasks/" + id);
 
       setTasks(res.data.tasks);
       localStorage.setItem("task_start", new Date().toLocaleString());
@@ -57,13 +63,13 @@ const Task = ({
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
   return (
     <>
       <div
         className={`overflow-hidden shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-0.5 hover:shadow-2xl rounded-lg ${
-          is_working ? "shadow-xl border-t-2 border-b-2 border-indigo-400" : ""
+          isWorking ? "shadow-xl border-t-2 border-b-2 border-indigo-400" : ""
         }`}
       >
         <div className="w-full block h-full">
@@ -83,7 +89,7 @@ const Task = ({
                       : "bg-gray-200"
                   }`}
                 >
-                  {is_working ? "Working..." : "Deadline"}
+                  {isWorking ? "Working..." : "Deadline"}
                 </span>
                 {new Date(deadline).toLocaleString().match(/.+(?=:\d{1,2})/)}
               </p>
@@ -106,12 +112,13 @@ const Task = ({
                   Edit
                 </button>
                 <button
-                  onClick={() =>
-                    is_working ? setIsPostponingTask(true) : workTask()
-                  }
-                  className="px-1 py-1 w-1/4 rounded cursor-pointer mr-1 bg-indigo-500 hover:bg-indigo-600"
+                  disabled={isWorking}
+                  onClick={startTask}
+                  className={`px-1 py-1 w-1/4 rounded cursor-pointer mr-1 bg-indigo-500 hover:bg-indigo-600 ${
+                    isWorking ? "opacity-50" : ""
+                  }`}
                 >
-                  {is_working ? "Postpone" : "Work"}
+                  Work
                 </button>
                 <button
                   onClick={finishTask}
@@ -128,20 +135,13 @@ const Task = ({
         <EditTask
           setIsEditingTask={setIsEditingTask}
           setTasks={setTasks}
+          tasks={tasks}
           title={title}
           deadline={deadline}
           description={description}
-          _id={_id}
-        />
-      )}
-      {isPostponingTask && (
-        <PostponeTask
-          setIsPostponingTask={setIsPostponingTask}
-          setTasks={setTasks}
-          title={title}
-          deadline={deadline}
-          description={description}
-          _id={_id}
+          isWorking={isWorking}
+          reportId={reportId}
+          id={id}
         />
       )}
     </>

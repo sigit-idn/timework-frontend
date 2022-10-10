@@ -1,15 +1,25 @@
 import { FormEvent, useState } from "react";
+import { Task } from "../../../interfaces/task";
 import useAuthFetch from "../../../utils/authFetchHook";
 
 const EditTask = ({
   setIsEditingTask,
   title,
   setTasks,
+  tasks,
   deadline,
   description,
-  _id,
+  isWorking,
+  reportId,
+  id,
 }: any) => {
-  const [body, setBody] = useState({});
+  const [body, setBody] = useState<Task>({
+    title,
+    deadline,
+    description,
+    isWorking,
+    reportId
+  });
   const authFetch = useAuthFetch();
 
   const taskDeadline = new Date(
@@ -25,9 +35,17 @@ const EditTask = ({
   };
   const editTask = (event: FormEvent) => {
     event.preventDefault();
+
     authFetch
-      .put("/tasks/" + _id, body)
-      .then((res: any) => setIsEditingTask(false) & setTasks(res.data.tasks));
+      .put("/tasks/" + id, body)
+      .then(() => {
+        setTasks(
+          tasks?.map((task: Task) =>
+            task.id == id ? { ...task, ...body } : task
+          )
+        );
+        setIsEditingTask(false);
+      })
   };
 
   return (

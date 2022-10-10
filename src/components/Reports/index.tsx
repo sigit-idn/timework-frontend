@@ -6,23 +6,17 @@ import Report from "./Report";
 
 const Reports = () => {
   const navigate = useNavigate();
-  const { pathname, state } = useLocation();
-  const userId = pathname.match(/\w{24}/);
+  const { state } = useLocation();
   const authFetch = useAuthFetch();
+  const [userId, setUserId] = useState("");
   const [reports, setReports] = useState([]);
-  const [month, setMonth] = useState(new Date().toLocaleDateString());
+  const [month, setMonth] = useState(new Date().toLocaleDateString().replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"));
 
   useEffect(() => {
     authFetch
-      .get(`/report?${userId ? "userId=" + userId + "&" : ""}month=` + month)
-      .then((res: any) => {
-        const { data } = res;
-
-        setReports(
-          data.sort((a: any, b: any) =>
-            new Date(a.date).getTime() - new Date(b.date).getTime() < 0 ? 1 : -1
-          )
-        );
+      .get(`/reports?${userId ? "userId=" + userId + "&" : ""}month=` + month)
+      .then((data: any) => {
+        setReports(data);
       });
   }, [month]);
 
@@ -50,25 +44,16 @@ const Reports = () => {
         <input
           id="dateInput"
           onChange={({ target }: any) =>
-            setMonth(new Date(target.value).toLocaleDateString())
+            setMonth(target.value.replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"))
           }
           className="border-0 bg-transparent text-sm"
           type="month"
-          defaultValue={
-            new Date().getFullYear() +
-            "-" +
-            (new Date().getMonth() + 1 < 10
-              ? "0" + new Date().getMonth() + 1
-              : new Date().getMonth() + 1)
-          }
+          defaultValue={month}
         />
       </label>
 
       {reports
-        ?.sort((a: any, b: any) =>
-          new Date(a.date) < new Date(b.date) ? 1 : -1
-        )
-        .map((report: any, i: number) => (
+        ?.map((report: any, i: number) => (
           <Report setReports={setReports} report={report} key={i} />
         ))}
     </div>

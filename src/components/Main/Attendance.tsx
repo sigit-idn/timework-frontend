@@ -37,8 +37,6 @@ const Attendance = ({
     authFetch
       .post("/attendances/" + name)
       .then((res: any) => {
-        console.log({res});
-        
         setTime(formatTime(res[name.camelize()]));
         setIsClicked(true);
         if (name === "work_start")
@@ -50,7 +48,7 @@ const Attendance = ({
   return (
     <div onClick={attend} className="mt-3 px-2 w-1/2 cursor-pointer">
       <div
-        className={`flex md:px-10 items-center py-6 shadow-sm rounded-md  transition duration-500 ${
+        className={`flex md:px-10 items-center py-6 shadow-sm rounded-md transition transform duration-500 ${
           cta === dataKey
             ? "bg-indigo-500 shadow-lg hover:shadow-2xl"
             : isClicked

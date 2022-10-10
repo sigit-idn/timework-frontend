@@ -4,7 +4,7 @@ import useAuthFetch from "../../utils/authFetchHook";
 import Task from "./Task";
 
 const Report = ({
-  report: { tasks, notes, date, _id: report_id },
+  report: { tasks, notes, date, id: reportId },
   setReports,
 }: any) => {
   const authFetch = useAuthFetch();
@@ -19,7 +19,7 @@ const Report = ({
 
     if (isEditing)
       authFetch
-        .put("/reports/" + report_id, {
+        .put("/reports/" + reportId, {
           notes: editNotes,
         })
         .then((res: any) => setReports(res.data.reports));
@@ -47,21 +47,19 @@ const Report = ({
           >
             {tasks.map(
               (
-                { task_start, task_end, title, description, _id }: any,
+                { taskStart, taskEnd, title, description, id }: any,
                 i: number
               ) => (
-                <>
                   <Task
                     key={i}
                     setReports={setReports}
-                    _id={_id}
-                    report_id={report_id}
-                    task_start={task_start}
-                    task_end={task_end}
+                    id={id}
+                    reportId={reportId}
+                    taskStart={taskStart}
+                    taskEnd={taskEnd}
                     title={title}
                     description={description}
                   />
-                </>
               )
             )}
           </div>

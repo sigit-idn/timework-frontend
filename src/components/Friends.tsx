@@ -1,13 +1,21 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Employee } from "../interfaces/employee";
 import useAuthFetch from "../utils/authFetchHook";
 
 const Friends: FunctionComponent = () => {
   const authFetch = useAuthFetch();
-  const [friends, setFriends] = useState([]);
+  const [friends, setFriends] = useState<Employee[]>([] as Employee[]);
+  
   useEffect(() => {
-    authFetch.get("/employees").then((res: any) => setFriends(res.data));
+    authFetch.get("/employees")
+      .then((data: Employee[]|any) => {
+        setFriends(data);
+      });
+
+    return () => setFriends([]);
   }, []);
+
   return (
     <div className="flex flex-col mt-8">
       <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -37,8 +45,8 @@ const Friends: FunctionComponent = () => {
 
             <tbody className="bg-white">
               {friends.map(
-                ({ name, task_length, working_task, position, _id }: any) => (
-                  <tr>
+                ({ name, tasks, position, id }: Employee) => (
+                  <tr key={id}>
                     <td className="md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 group">
                       <div className="flex items-center">
                         <div className="ml-4">
@@ -49,21 +57,21 @@ const Friends: FunctionComponent = () => {
                             ) && (
                               <>
                                 <Link
-                                  to={"/friends/edit/" + _id}
+                                  to={"/friends/edit/" + id}
                                   state={name}
                                   className="py-1 px-2 bg-yellow-500 text-white rounded text-xs transition hover:bg-yellow-600 opacity-100 block md:opacity-0 group-hover:opacity-100"
                                 >
                                   Edit
                                 </Link>
                                 <Link
-                                  to={"/friends/attendances/" + _id}
+                                  to={"/friends/attendances/" + id}
                                   state={name}
                                   className="py-1 px-2 bg-green-500 text-white border block text-xs border-green-500 rounded md:hidden"
                                 >
                                   Attendance
                                 </Link>
                                 <Link
-                                  to={"/friends/reports/" + _id}
+                                  to={"/friends/reports/" + id}
                                   state={name}
                                   className="py-1 px-2 bg-blue-500 text-white border block text-xs border-blue-500 rounded md:hidden"
                                 >
@@ -84,14 +92,14 @@ const Friends: FunctionComponent = () => {
 
                     <td className="md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                       <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-md bg-gray-100">
-                        {working_task}
+                        {tasks?.find(({ isWorking }) => isWorking)?.title}
                       </span>
                       <div className="flex text-indigo-500 text-center md:hidden items-center relative w-20 mt-2">
                         <span className="flex-1 py-1 border border-indigo-500 rounded-l">
-                          {task_length}
+                          {tasks?.length}
                         </span>
                         <Link
-                          to={"/friends/tasks/" + _id}
+                          to={"/friends/tasks/" + id}
                           state={name}
                           className="py-1 px-2 bg-indigo-500 text-white border border-indigo-500 rounded-r h-full"
                         >
@@ -103,10 +111,10 @@ const Friends: FunctionComponent = () => {
                     <td className="md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500 w-32">
                       <div className="hidden text-indigo-500 text-center md:flex items-center relative">
                         <span className="flex-1 py-1 border border-indigo-500 rounded-l">
-                          {task_length}
+                          {tasks?.length}
                         </span>
                         <Link
-                          to={"/friends/tasks/" + _id}
+                          to={"/friends/tasks/" + id}
                           state={name}
                           className="py-1 px-2 bg-indigo-500 text-white border border-indigo-500 rounded-r h-full"
                         >
@@ -118,14 +126,14 @@ const Friends: FunctionComponent = () => {
                       <td className="md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500 w-32">
                         <div className="text-center hidden md:flex">
                           <Link
-                            to={"/friends/attendances/" + _id}
+                            to={"/friends/attendances/" + id}
                             state={name}
                             className="py-1 px-2 bg-green-500 text-white border border-green-500 rounded-l"
                           >
                             Attendance
                           </Link>
                           <Link
-                            to={"/friends/reports/" + _id}
+                            to={"/friends/reports/" + id}
                             state={name}
                             className="py-1 px-2 bg-blue-500 text-white border border-blue-500 rounded-r"
                           >

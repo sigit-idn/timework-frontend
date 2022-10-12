@@ -20,9 +20,9 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "npx craco start",
-    "build": "npx craco build",
-    "test": "npx craco test",
+    "start": "craco start",
+    "build": "yarn config set \"strict-ssl\" false -g && craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -44,8 +44,8 @@
     ]
   },
   "devDependencies": {
-    "@craco/craco": "^6.4.0",
     "@types/react": "^17.0.34",
+    "@craco/craco": "^6.4.0",
     "autoprefixer": "^9.8.8",
     "postcss": "^7.0.39",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"

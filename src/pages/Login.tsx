@@ -45,6 +45,7 @@ const Login = () => {
       <section className="min-h-screen flex items-stretch text-white ">
         <div
           className={`lg:flex w-1/2 hidden bg-gray-800 bg-no-repeat bg-cover relative items-center [background-image:url('${bgLogin}')]`}
+          style={{ backgroundImage: `url(${bgLogin})` }}
         >
           <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
           <div className="w-full px-24 z-10">
@@ -60,6 +61,7 @@ const Login = () => {
         <div className="lg:w-1/2 w-full flex items-center justify-center text-center md:px-16 px-0 z-0 bg-gray-800">
           <div
             className={`absolute lg:hidden z-10 inset-0 bg-gray-500 bg-no-repeat bg-cover items-center [background-image:url(${bgLogin})]`}
+            style={{ backgroundImage: `url(${bgLogin})` }}
           >
             <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
           </div>

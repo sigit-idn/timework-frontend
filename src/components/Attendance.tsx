@@ -1,19 +1,19 @@
 import { ArrowLeft } from "@geist-ui/react-icons";
 import { ChangeEvent, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAuthFetch from "../utils/authFetchHook";
 
 const Attendance = () => {
   const navigate = useNavigate();
-  const { pathname, state } = useLocation();
-  const [userId, setUserId] = useState("");
+  const { id: employeeId } = useParams();
+  const { state } = useLocation();
   const [attendances, setAttendances] = useState([]);
   const [month, setMonth] = useState(new Date().toLocaleDateString().replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"));
   const authFetch = useAuthFetch();
 
   useEffect(() => {
     authFetch
-      .get(`/attendances?${userId ? `userId=${userId}&` : ""}month=` + month)
+      .get(`/attendances?${employeeId ? `employeeId=${employeeId}&` : ""}month=` + month)
       .then((data: any) => {
         setAttendances(data);
       });
@@ -22,7 +22,7 @@ const Attendance = () => {
   return (
     <>
       <div className="flex flex-col mt-2">
-        {userId ? (
+        {employeeId ? (
           <div className="flex items-center mb-5">
             <button
               className="rounded-full shadow hover:shadow-md bg-white p-1"
@@ -98,9 +98,9 @@ const Attendance = () => {
                       new Date(workStart).getTime() +
                       new Date(breakStart).getTime() -
                       new Date(breakEnd).getTime();
-
+                    
                     return (
-                      <tr>
+                      <tr key={date}>
                         <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
                           {new Date(date).toLocaleDateString()}
                         </td>
@@ -138,11 +138,12 @@ const Attendance = () => {
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
-                          {isNaN(workSeconds)
+                          { workSeconds < 0
                             ? "Unset"
                             : Math.floor(workSeconds / 60 / 60 / 1000) +
                               ":" +
-                              (workSeconds % 60)}
+                              (workSeconds % 60)
+                            }
                         </td>
                       </tr>
                     );

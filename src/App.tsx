@@ -22,10 +22,10 @@ function App() {
             <Route path="reports" element={<Reports />} />
             <Route path="attendances" element={<Attendance />} />
             <Route path="add-employee" element={<AddEmployee />} />
-            <Route path="friends/tasks/:id" element={<EmployeeTask />} />
-            <Route path="friends/edit/:id" element={<AddEmployee />} />
-            <Route path="friends/reports/:id" element={<Reports />} />
-            <Route path="friends/attendances/:id" element={<Attendance />} />
+            <Route path="friends/:id/tasks" element={<EmployeeTask />} />
+            <Route path="friends/:id/edit" element={<AddEmployee />} />
+            <Route path="friends/:id/reports" element={<Reports />} />
+            <Route path="friends/:id/attendances" element={<Attendance />} />
             <Route path="login" element={<Login />} />
           </Routes>
         </MainLayout>

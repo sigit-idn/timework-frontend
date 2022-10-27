@@ -57,21 +57,21 @@ const Friends: FunctionComponent = () => {
                             ) && (
                               <>
                                 <Link
-                                  to={"/friends/edit/" + id}
+                                  to={`/friends/${id}/edit`}
                                   state={name}
                                   className="py-1 px-2 bg-yellow-500 text-white rounded text-xs transition hover:bg-yellow-600 opacity-100 block md:opacity-0 group-hover:opacity-100"
                                 >
                                   Edit
                                 </Link>
                                 <Link
-                                  to={"/friends/attendances/" + id}
+                                  to={`/friends/${id}/attendances`}
                                   state={name}
                                   className="py-1 px-2 bg-green-500 text-white border block text-xs border-green-500 rounded md:hidden"
                                 >
                                   Attendance
                                 </Link>
                                 <Link
-                                  to={"/friends/reports/" + id}
+                                  to={`/friends/${id}/reports`}
                                   state={name}
                                   className="py-1 px-2 bg-blue-500 text-white border block text-xs border-blue-500 rounded md:hidden"
                                 >
@@ -114,7 +114,7 @@ const Friends: FunctionComponent = () => {
                           {tasks?.length}
                         </span>
                         <Link
-                          to={"/friends/tasks/" + id}
+                          to={`/friends/${id}/tasks`}
                           state={name}
                           className="py-1 px-2 bg-indigo-500 text-white border border-indigo-500 rounded-r h-full"
                         >
@@ -126,14 +126,14 @@ const Friends: FunctionComponent = () => {
                       <td className="md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500 w-32">
                         <div className="text-center hidden md:flex">
                           <Link
-                            to={"/friends/attendances/" + id}
+                            to={`/friends/${id}/attendances`}
                             state={name}
                             className="py-1 px-2 bg-green-500 text-white border border-green-500 rounded-l"
                           >
                             Attendance
                           </Link>
                           <Link
-                            to={"/friends/reports/" + id}
+                            to={`/friends/${id}/reports`}
                             state={name}
                             className="py-1 px-2 bg-blue-500 text-white border border-blue-500 rounded-r"
                           >

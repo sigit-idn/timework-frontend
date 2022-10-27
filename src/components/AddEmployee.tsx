@@ -1,32 +1,21 @@
 import { ArrowLeft } from "@geist-ui/react-icons";
 import { ChangeEvent, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Employee } from "../interfaces/employee";
 import useAuthFetch from "../utils/authFetchHook";
 import useAuthorization from "../utils/authourizationHook";
 
 const AddEmployee = () => {
   const navigate = useNavigate();
   const authorize = useAuthorization();
-  const { pathname, state } = useLocation();
-  const userId = pathname.match(/\w{24}/)?.[0];
-
-  interface UserData {
-    name?: string;
-    email?: string;
-    position?: string;
-    phone?: string;
-    role?: "employee" | "admin" | "superadmin";
-    password?: string;
-    address?: string;
-    bio?: string;
-  }
-
-  const [userData, setUserData] = useState<UserData>({});
+  const { state } = useLocation();
+  const { id: employeeId } = useParams();
 
   authorize("admin");
+  const [userData, setUserData] = useState<Employee|null>(null);
   const authFetch = useAuthFetch();
   const [body, setBody] = useState({});
-
+  
   const inputChange = ({
     target,
   }: ChangeEvent<
@@ -38,31 +27,31 @@ const AddEmployee = () => {
   useEffect(
     (): any =>
       authFetch
-        .get("/employee/" + userId)
-        .then((res: any) => setUserData(res.data)),
+        .get("/employees/" + employeeId)
+        .then((data: any) => setUserData(data)),
     []
   );
 
   const saveEmployee = (event: any) => {
     event.preventDefault();
 
-    if (userId) {
+    if (employeeId) {
       return authFetch
-        .put("/employee/" + userId, body)
+        .put("/employees/" + employeeId, body)
         .then((res) => console.log(res));
     } else {
-      authFetch.post("/employee", body).then((res) => console.log(res));
+      authFetch.post("/employees", body).then((res) => console.log(res));
     }
   };
 
   const deleteEmployee = () => {
     if (window.confirm("Are you sure to delete an employee?"))
-      authFetch.delete("/employee/" + userId).then(() => navigate(-1));
+      authFetch.delete("/employees/" + employeeId).then(() => navigate(-1));
   };
 
   return (
     <div className="relative min-h-screen flex flex-col justify-center bg-center sm:px-3 lg:px-8 bg-no-repeat bg-cover">
-      {userId ? (
+      {employeeId ? (
         <div className="flex items-center mb-5">
           <button
             className="rounded-full shadow hover:shadow-md bg-white p-1"
@@ -81,7 +70,7 @@ const AddEmployee = () => {
           <div className="flex flex-col ">
             <div className="flex flex-col sm:flex-row items-center">
               <h2 className="font-semibold text-lg mr-auto">
-                {userId ? null : "Add Employee"}
+                {employeeId ? null : "Add Employee"}
               </h2>
             </div>
             <div className="mt-5">
@@ -98,7 +87,7 @@ const AddEmployee = () => {
                       placeholder="Name"
                       className="appearance-none block w-full text-grey-darker border-0 outline-none ring-1 ring-gray-200 focus:ring-indigo-500 rounded-lg h-10 px-4"
                       required
-                      defaultValue={userData.name}
+                      defaultValue={userData?.name}
                       onChange={inputChange}
                       type="text"
                       name="name"
@@ -120,7 +109,7 @@ const AddEmployee = () => {
                       className="appearance-none block w-full text-grey-darker border-0 outline-none ring-1 ring-gray-200 focus:ring-indigo-500 rounded-lg h-10 px-4"
                       required
                       onChange={inputChange}
-                      defaultValue={userData.email}
+                      defaultValue={userData?.email}
                       type="email"
                       name="email"
                       id="email"
@@ -141,11 +130,12 @@ const AddEmployee = () => {
                     <select
                       className="block w-full text-grey-darker border-0 outline-none ring-1 ring-gray-200 focus:ring-indigo-500 rounded-lg h-10 px-4 md:w-full "
                       required
-                      defaultValue={userData.position}
+                      defaultValue={userData?.position}
                       onChange={inputChange}
                       name="position"
                       id="position"
                     >
+                      <option hidden value=""></option>
                       <option value="Back-End Engineer">
                         Back-End Engineer
                       </option>
@@ -172,7 +162,7 @@ const AddEmployee = () => {
                       placeholder="Phone Number"
                       className="appearance-none block w-full text-grey-darker border-0 outline-none ring-1 ring-gray-200 focus:ring-indigo-500 rounded-lg h-10 px-4"
                       type="text"
-                      defaultValue={userData.phone}
+                      defaultValue={userData?.phone}
                       onChange={inputChange}
                       name="phone"
                       id="phone"
@@ -193,7 +183,7 @@ const AddEmployee = () => {
                       name="role"
                       className="block w-full flex-shrink flex-grow leading-normal flex-1 border-0 ring-1 ring-gray-200 focus:ring-indigo-500 h-10 rounded-lg px-3 relative"
                       placeholder="Role"
-                      defaultValue={userData.role ?? "employee"}
+                      defaultValue={userData?.role ?? "employee"}
                     >
                       <option defaultChecked value="employee">
                         Employee
@@ -233,29 +223,14 @@ const AddEmployee = () => {
                     type="text"
                     onChange={inputChange}
                     id="address"
-                    defaultValue={userData.address}
+                    defaultValue={userData?.address}
                     name="address"
                     className="block w-full flex-shrink flex-grow leading-normal flex-1 border-0 ring-1 ring-gray-200 focus:ring-indigo-500 h-10 rounded-lg px-3 relative"
                     placeholder="Address"
                   />
                 </div>
-                <div className="flex-auto w-full mb-1 text-xs space-y-2">
-                  <label
-                    className="font-semibold text-gray-600 py-2"
-                    htmlFor="bio"
-                  >
-                    Bio
-                  </label>
-                  <textarea
-                    name="bio"
-                    id="bio"
-                    onChange={inputChange}
-                    className="min-h-[100px] max-h-[300px] h-28 appearance-none block w-full text-grey-darker border-0 outline-none ring-1 ring-gray-200 focus:ring-indigo-500 rounded-lg  py-4 px-4"
-                    placeholder="Additional information"
-                  ></textarea>
-                </div>
                 <div className="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse">
-                  {userId ? (
+                  {employeeId ? (
                     <button
                       type="button"
                       onClick={deleteEmployee}

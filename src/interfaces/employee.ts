@@ -1,3 +1,4 @@
+import { Role } from "../enums/role";
 import { Task } from "./task";
 
 export interface Employee {
@@ -5,7 +6,9 @@ export interface Employee {
 	name      : string;
 	email     : string;
 	password? : string;
-	role      : string;
+	role      : Role;
+	phone?		: string;
+	address?	: string;
 	position  : string;
 	companyId?: string;
 	tasks?    : Task[];

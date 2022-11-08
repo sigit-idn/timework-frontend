@@ -1,28 +1,24 @@
-import { ArrowLeft } from "@geist-ui/react-icons";
-import { useEffect, useState } from "react";
+import { ArrowLeft                } from "@geist-ui/react-icons";
+import { useEffect, useState      } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import useAuthFetch from "../../utils/authFetchHook";
+import { ReportModel              } from "../../models/report";
+
 import Report from "./Report";
 
 const Reports = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const authFetch = useAuthFetch();
   const [userId, setUserId] = useState("");
-  const [reports, setReports] = useState([]);
-  const [month, setMonth] = useState(new Date().toLocaleDateString().replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"));
+  const [reports, setReports] = useState<ReportModel[]>([]);
+  const [month, setMonth] = useState(new Date().format("YYYY-MM"));
 
   useEffect(() => {
-    authFetch
-      .get(`/reports?${userId ? "userId=" + userId + "&" : ""}month=` + month)
-      .then((data: any) => {
-        setReports(data);
-      });
+    ReportModel.getWhere({ employeeId: userId, month }).then(setReports);
   }, [month]);
 
   return (
     <div className="flex flex-col mt-3">
-      {userId ? (
+      { userId && (
         <div className="flex items-center mb-5">
           <button
             className="rounded-full shadow hover:shadow-md bg-white p-1"
@@ -35,7 +31,7 @@ const Reports = () => {
             <span className="font-light">'s Reports</span>
           </h1>
         </div>
-      ) : null}
+      ) }
 
       <label
         htmlFor="dateInput"
@@ -43,19 +39,19 @@ const Reports = () => {
       >
         <input
           id="dateInput"
-          onChange={({ target }: any) =>
-            setMonth(target.value.replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"))
-          }
+          onChange={({ target }: { target: HTMLInputElement }) => {
+            setMonth(target.value.match(/\d{4}-\d{2}/)?.[0] || month)
+          }}
           className="border-0 bg-transparent text-sm"
           type="month"
           defaultValue={month}
         />
       </label>
 
-      {reports
-        ?.map((report: any, i: number) => (
+      { reports
+        ?.map((report: ReportModel, i: number) => (
           <Report setReports={setReports} report={report} key={i} />
-        ))}
+        )) }
     </div>
   );
 };

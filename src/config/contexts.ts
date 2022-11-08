@@ -1,9 +1,9 @@
 import { createContext } from "react";
-import { Task } from "../interfaces/task";
+import { TaskModel     } from "../models/task";
 
-const TaskContext = createContext({
-	tasks: [] as Task[],
-	setTasks(tasks: Task[]) { }
+const WorkingTaskContext = createContext({
+	workingTask: {} as TaskModel|undefined,
+	setWorkingTask: (task?: TaskModel) => {},
 })
 
-export { TaskContext };
+export { WorkingTaskContext }

@@ -1,8 +1,8 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useState } from "react";
+import { useLocation                 } from "react-router-dom";
+
 import Sidebar from "../components/Sidebar/";
-import Header from "../components/Header";
-import { useLocation } from "react-router-dom";
-import useAuthFetch from "../utils/authFetchHook";
+import Header  from "../components/Header";
 
 const MainLayout: FunctionComponent = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

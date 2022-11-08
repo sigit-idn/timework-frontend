@@ -1,22 +1,20 @@
 import { ArrowLeft } from "@geist-ui/react-icons";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import useAuthFetch from "../utils/authFetchHook";
+import { AttendanceModel } from "../models/attendance";
 
 const Attendance = () => {
   const navigate = useNavigate();
   const { id: employeeId } = useParams();
   const { state } = useLocation();
-  const [attendances, setAttendances] = useState([]);
+  const [attendances, setAttendances] = useState<AttendanceModel[]>([]);
   const [month, setMonth] = useState(new Date().toLocaleDateString().replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"));
-  const authFetch = useAuthFetch();
 
   useEffect(() => {
-    authFetch
-      .get(`/attendances?${employeeId ? `employeeId=${employeeId}&` : ""}month=` + month)
-      .then((data: any) => {
-        setAttendances(data);
-      });
+    const params: Record<string, string> = { month };
+    if (employeeId) params.employeeId = employeeId;
+
+    AttendanceModel.getWhere(params).then(setAttendances);
   }, [month]);
 
   return (
@@ -47,13 +45,7 @@ const Attendance = () => {
             }
             className="border-0 bg-transparent text-sm"
             type="month"
-            defaultValue={
-              new Date().getFullYear() +
-              "-" +
-              (new Date().getMonth() + 1 < 10
-                ? "0" + new Date().getMonth() + 1
-                : new Date().getMonth() + 1)
-            }
+            defaultValue={ new Date().format("yyyy-MM") }
           />
         </label>
       </div>

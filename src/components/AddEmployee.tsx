@@ -1,8 +1,8 @@
-import { ArrowLeft } from "@geist-ui/react-icons";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ArrowLeft                           } from "@geist-ui/react-icons";
+import { ChangeEvent, useEffect, useState    } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Employee } from "../interfaces/employee";
-import useAuthFetch from "../utils/authFetchHook";
+import { EmployeeInput, EmployeeModel        } from "../models/employee";
+
 import useAuthorization from "../utils/authourizationHook";
 
 const AddEmployee = () => {
@@ -12,46 +12,49 @@ const AddEmployee = () => {
   const { id: employeeId } = useParams();
 
   authorize("admin");
-  const [userData, setUserData] = useState<Employee|null>(null);
-  const authFetch = useAuthFetch();
-  const [body, setBody] = useState({});
+  const [userData, setUserData] = useState<EmployeeModel|null>(null);
+  const [body, setBody] = useState<EmployeeInput|null>(null);
   
   const inputChange = ({
     target,
   }: ChangeEvent<
     HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
   >) => {
-    setBody({ ...body, [target.name]: target.value });
+    setBody({ ...body, [target.name]: target.value } as EmployeeInput);
   };
 
-  useEffect(
-    (): any =>
-      authFetch
-        .get("/employees/" + employeeId)
-        .then((data: any) => setUserData(data)),
-    []
-  );
+  useEffect(() => {
+    if (state) {
+      setUserData(state);
+      setBody(state);
+    }
+
+    if (employeeId) {
+      EmployeeModel.get(employeeId).then(setUserData);
+    }
+  }, []);
 
   const saveEmployee = (event: any) => {
     event.preventDefault();
 
     if (employeeId) {
-      return authFetch
-        .put("/employees/" + employeeId, body)
-        .then((res) => console.log(res));
-    } else {
-      authFetch.post("/employees", body).then((res) => console.log(res));
-    }
+      return EmployeeModel.update(employeeId, body as EmployeeInput).then(() =>
+        navigate(-1)
+      );
+    } 
+    
+    EmployeeModel.create(body as EmployeeInput).then(() => navigate(-1));
   };
 
   const deleteEmployee = () => {
-    if (window.confirm("Are you sure to delete an employee?"))
-      authFetch.delete("/employees/" + employeeId).then(() => navigate(-1));
+    if (window.confirm("Are you sure to delete an employee?")) {
+      EmployeeModel.delete(employeeId!).then(() => navigate(-1));
+    }
   };
 
   return (
     <div className="relative min-h-screen flex flex-col justify-center bg-center sm:px-3 lg:px-8 bg-no-repeat bg-cover">
-      {employeeId ? (
+      { employeeId && (
         <div className="flex items-center mb-5">
           <button
             className="rounded-full shadow hover:shadow-md bg-white p-1"
@@ -64,13 +67,13 @@ const AddEmployee = () => {
             {state}
           </h1>
         </div>
-      ) : null}
+      ) }
       <div className="w-full space-y-8 p-6 md:p-10 bg-white rounded-xl shadow-lg z-10">
         <div className="grid gap-8 grid-cols-1">
           <div className="flex flex-col ">
             <div className="flex flex-col sm:flex-row items-center">
               <h2 className="font-semibold text-lg mr-auto">
-                {employeeId ? null : "Add Employee"}
+                { !employeeId && "Add Employee" }
               </h2>
             </div>
             <div className="mt-5">

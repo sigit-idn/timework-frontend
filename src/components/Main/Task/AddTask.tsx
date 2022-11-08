@@ -1,31 +1,21 @@
-import { FormEvent, useContext, useState } from "react";
-import { TaskContext } from "../../../config/contexts";
-import { Task } from "../../../interfaces/task";
-import useAuthFetch from "../../../utils/authFetchHook";
+import { FormEvent, useState  } from "react";
+import { TaskInput, TaskModel } from "../../../models/task";
 
 const AddTask = ({ setIsAddingTask, userId, name }: any) => {
-  const [body, setBody] = useState<Task>({
+  const [body, setBody] = useState<TaskInput>({
     employeeId: userId,
-  } as Task);
-  const authFetch = useAuthFetch();
-  const { tasks, setTasks } = useContext(TaskContext);
+  } as TaskInput);
 
   const inputChange = ({ target }: any) => {
     setBody({ ...body, [target.name]: target.value });
   };
+
   const addTask = (event: FormEvent) => {
     event.preventDefault();
-    authFetch
-      .post(`/tasks`, body)
-      .then(() => {
-        setTasks([...tasks, body]);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setIsAddingTask(false);
-      });
+
+    TaskModel.create(body).then((task) => {
+      setIsAddingTask(false);
+    });
   };
 
   return (

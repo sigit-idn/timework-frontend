@@ -1,37 +1,47 @@
+import { TaskModel                       } from "../models/task";
+import { WorkingTaskContext              } from "../config/contexts";
+import { AttendanceModel                 } from "../models/attendance";
 import { useContext, useEffect, useState } from "react";
-import AddTask from "../components/Main/Task/AddTask";
-import Attendance from "../components/Main/Attendance";
-import Task from "../components/Main/Task";
-import { Task as TaskInterface } from "../interfaces/task";
-import useAuthFetch from "../utils/authFetchHook";
+
 import useAuthorization from "../utils/authourizationHook";
-import { TaskContext } from "../config/contexts";
+import AddTask          from "../components/Main/Task/AddTask";
+import Attendance       from "../components/Main/Attendance";
+import Task             from "../components/Main/Task";
 
 const Dashboard = () => {
-  const [cta, setCta] = useState(1);
-  const [clock, setClock] = useState("");
+  const [cta, setCta] = useState<1 | 2 | 3 | 4>(1);
+  const [clock, setClock] = useState<Date>(new Date());
   const authorize = useAuthorization();
-  const authFetch = useAuthFetch();
-  const { tasks } = useContext(TaskContext);
-  const [attendances, setAttendances] = useState({});
-  const [finishedTasks, setFinishedTasks] = useState(0);
+  const [attendance, setAttendance] = useState<AttendanceModel>();
+  const [finishedTasks, setFinishedTasks] = useState<TaskModel[]>([]);
   const [taskStart, setTaskStart] = useState(new Date());
   const [isAddingTask, setIsAddingTask] = useState(false);
+  const [tasks, setTasks] = useState<TaskModel[]>([]);
+  const { setWorkingTask } = useContext(WorkingTaskContext);
   
-  setInterval(() => setClock(new Date().toLocaleTimeString()), 1000);
   
   useEffect(() => {
+    TaskModel.getAll().then(setTasks);
+
+    const tickInterval = setInterval(() => setClock(new Date()), 1000);
     authorize("employee");
-
-    authFetch.get("/attendances?date=" + new Date().toLocaleDateString().replace(/\//g, "-"))
-    .then(([data]: any) => {
+    
+    AttendanceModel.getWhere({ date: new Date().format("yyyy-MM-dd") })
+    .then(([data]: AttendanceModel[]) => {
+      setAttendance(data);
       
-      setAttendances(data);
-
       // setCta((data && Object.keys(data).length - 1) ?? 1);
       setTaskStart(new Date());
     });
+
+    return () => clearInterval(tickInterval);
   }, []);
+
+  useEffect(() => {
+    if (tasks.length) {
+      setWorkingTask(tasks.find(({ isWorking }) => isWorking));
+    }
+  }, [tasks]);
 
   return (
     <>
@@ -41,67 +51,36 @@ const Dashboard = () => {
 
       <div className="mt-1">
         <div className="flex flex-wrap -mx-2">
-          <Attendance
-            title="Start Work"
-            subtitle={clock}
-            attendances={attendances}
-            name="work_start"
-            setCta={setCta}
-            cta={cta}
-            dataKey={1}
-          />
-          <Attendance
-            title="Start Break"
-            subtitle={clock}
-            attendances={attendances}
-            name="break_start"
-            setCta={setCta}
-            cta={cta}
-            dataKey={2}
-          />
-          <Attendance
-            title="End Break"
-            subtitle={clock}
-            attendances={attendances}
-            name="break_end"
-            setCta={setCta}
-            cta={cta}
-            dataKey={3}
-          />
-          <Attendance
-            title="End Work"
-            subtitle={clock}
-            attendances={attendances}
-            name="work_end"
-            setCta={setCta}
-            cta={cta}
-            dataKey={4}
-          />
+          {["Work Start", "Break Start", "Break End", "Work End"].map(
+            (title: any, index: any) => (
+              <Attendance
+                key={index}
+                title={title}
+                subtitle={clock.format("hh:mm:ss")}
+                attendance={attendance!}
+                setCta={setCta}
+                cta={cta}
+                dataKey={index + 1}
+              />
+            )
+          )}
         </div>
       </div>
 
       <h3 className="text-gray-700 text-3xl mt-7">Tasks</h3>
       <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-3 gap-3">
         {tasks
-          ?.filter(({ taskEnd }: TaskInterface) => !taskEnd)
           ?.map(
             (
-              { deadline, title, description, reportId, isWorking, id }: TaskInterface,
+              task: TaskModel,
               i: number
             ) => (
               <Task
                 key={i}
                 dataKey={i}
-                deadline={deadline}
-                title={title}
                 finishedTasks={finishedTasks}
                 setFinishedTasks={setFinishedTasks}
-                description={description}
-                isWorking={isWorking}
-                reportId={reportId}
-                taskStart={taskStart}
-                setTaskStart={setTaskStart}
-                id={id}
+                task={task}
               />
             )
           )}

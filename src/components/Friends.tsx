@@ -1,19 +1,15 @@
 import { FunctionComponent, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Employee } from "../interfaces/employee";
-import useAuthFetch from "../utils/authFetchHook";
+import { Link                                   } from "react-router-dom";
+import { EmployeeModel                          } from "../models/employee";
+import { handleFetchError } from "../utils/handleFetchError";
 
 const Friends: FunctionComponent = () => {
-  const authFetch = useAuthFetch();
-  const [friends, setFriends] = useState<Employee[]>([] as Employee[]);
+  const [friends, setFriends] = useState<EmployeeModel[]>([]);
   
   useEffect(() => {
-    authFetch.get("/employees")
-      .then((data: Employee[]|any) => {
-        setFriends(data);
-      });
-
-    return () => setFriends([]);
+    EmployeeModel.getAll()
+      .then(setFriends)
+      .catch(handleFetchError);
   }, []);
 
   return (
@@ -45,7 +41,7 @@ const Friends: FunctionComponent = () => {
 
             <tbody className="bg-white">
               {friends.map(
-                ({ name, tasks, position, id }: Employee) => (
+                ({ name, tasks, position, id }: EmployeeModel) => (
                   <tr key={id}>
                     <td className="md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 group">
                       <div className="flex items-center">

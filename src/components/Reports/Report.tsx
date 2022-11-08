@@ -1,15 +1,20 @@
 import { ChevronDown } from "@geist-ui/react-icons";
-import { useState } from "react";
-import useAuthFetch from "../../utils/authFetchHook";
+import { useState    } from "react";
+import { ReportModel } from "../../models/report";
+
 import Task from "./Task";
+
+interface ReportProps {
+  report: ReportModel;
+  setReports: Function;
+}
 
 const Report = ({
   report: { tasks, notes, date, id: reportId },
   setReports,
-}: any) => {
-  const authFetch = useAuthFetch();
+}: ReportProps) => {
   const [isShown, setIsShown] = useState(
-    new Date(date).toLocaleDateString() === new Date().toLocaleDateString()
+    new Date().format("yyyy-mm-dd") === date
   );
   const [isEditing, setIsEditing] = useState(!notes);
   const [editNotes, setEditNotes] = useState("");
@@ -17,13 +22,18 @@ const Report = ({
   const editReport = () => {
     setIsEditing(!isEditing);
 
-    if (isEditing)
-      authFetch
-        .put("/reports/" + reportId, {
-          notes: editNotes,
-        })
-        .then((res: any) => setReports(res.data.reports));
-  };
+    if (isEditing) {
+      ReportModel.update(reportId!, { notes: editNotes })
+        .then(() => 
+            setReports((reports: ReportModel[]) =>
+              reports.map((report: ReportModel) =>
+                report.id === reportId ? { ...report, notes: editNotes } : report
+              )
+            )
+        )
+        .catch((err) => console.error(err));
+    }
+  };    
 
   return (
     <div className="my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -45,7 +55,7 @@ const Report = ({
               isShown ? "scale-y-100 block" : "scale-y-0 hidden"
             }`}
           >
-            {tasks.map(
+            {tasks?.map(
               (
                 { taskStart, taskEnd, title, description, id }: any,
                 i: number

@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import useAuthFetch from "../../../utils/authFetchHook";
 
 const PostponeTask = ({
   setIsPostponingTask,
@@ -8,7 +7,6 @@ const PostponeTask = ({
   setTasks,
   description,
 }: any) => {
-  const authFetch = useAuthFetch();
   const [body, setBody] = useState({
     title,
     description,
@@ -36,10 +34,10 @@ const PostponeTask = ({
 
   const postponeTask = (event: any) => {
     event.preventDefault();
-    authFetch
-      .post("/reports/task", body)
-      .then((res: any) => setIsPostponingTask(false) & setTasks(res.data.tasks))
-      .catch((url) => redirect(url));
+    // authFetch
+    //   .post("/reports/task", body)
+    //   .then((res: any) => setIsPostponingTask(false) & setTasks(res.data.tasks))
+    //   .catch((url) => redirect(url));
   };
 
   return (

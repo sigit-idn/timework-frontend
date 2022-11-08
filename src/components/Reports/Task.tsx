@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
-import { TaskContext } from "../../config/contexts";
-import useAuthFetch from "../../utils/authFetchHook";
+import { TaskModel            } from "../../models/task";
 
 const Task = ({
   taskStart,
@@ -13,7 +12,6 @@ const Task = ({
   isAdding,
   reportId,
 }: any) => {
-  const authFetch = useAuthFetch();
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({});
 
@@ -22,18 +20,26 @@ const Task = ({
 
   const editTask = () => {
     setIsEditing(!isEditing);
-    if (isEditing)
-      authFetch
-        .put(`/reports/${reportId}/${id}`, editData)
-        .then((res: any) => setReports(res.data.reports));
+    if (isEditing) {
+      TaskModel.update(id, editData)
+    }
   };
 
   const deleteTask = () => {
     if (window.confirm("Are you sure to delete task from report?"))
-      authFetch
-        .delete(`/reports/${reportId}/${id}`)
-        .then((res: any) => setReports(res.data.reports));
-  };
+      TaskModel.delete(id).then(() => {
+        setReports((reports: any) =>
+          reports.map((report: any) =>
+            report.id === reportId
+              ? {
+                ...report,
+                tasks: report.tasks.filter((task: any) => task.id !== id),
+              }
+              : report
+          )
+        );
+      });
+    };
 
   return (
     <>
@@ -48,12 +54,7 @@ const Task = ({
                     onChange={changeHandler}
                     className="text-sm bg-gray-50 px-1 py-2 rounded ring-1 outline-none border-0 focus:ring-indigo-500 ring-gray-200"
                     type="time"
-                    defaultValue={new Date(taskStart)
-                      .toLocaleTimeString()
-                      .match(/\d{1,2}:\d{1,2}/)
-                      ?.join("")
-                      .replace(/^(?=\d:)/, "0")
-                      .replace(/:(?=\d$)/, ":0")}
+                    defaultValue={new Date(taskStart).format("HH:mm")}
                   />
                   〜
                   <input
@@ -61,12 +62,7 @@ const Task = ({
                     onChange={changeHandler}
                     className="text-sm bg-gray-50 px-1 py-2 rounded ring-1 outline-none border-0 focus:ring-indigo-500 ring-gray-200"
                     type="time"
-                    defaultValue={new Date(taskEnd)
-                      .toLocaleTimeString()
-                      .match(/\d{1,2}:\d{1,2}/)
-                      ?.join("")
-                      .replace(/^(?=\d:)/, "0")
-                      .replace(/:(?=\d$)/, ":0")}
+                    defaultValue={new Date(taskEnd).format("HH:mm")}
                   />
                 </div>
                 <input
@@ -85,8 +81,8 @@ const Task = ({
             ) : (
               <>
                 <div className="text-sm leading-5 mb-2 text-indigo-500">
-                  {new Date(taskStart).toLocaleTimeString().match(/.+(?=:)/)}〜
-                  {new Date(taskEnd).toLocaleTimeString().match(/.+(?=:)/)}
+                  {new Date(taskStart).format("HH:mm")}〜
+                  {new Date(taskEnd).format("HH:mm")}
                 </div>
                 <h3 className="text-sm leading-5 mb-2 font-medium text-gray-900">
                   {title}

@@ -1,28 +1,27 @@
-import { ArrowLeft } from "@geist-ui/react-icons";
-import { FunctionComponent } from "react";
-import { useEffect, useState } from "react";
+import { ArrowLeft              } from "@geist-ui/react-icons";
+import { FunctionComponent      } from "react";
+import { useEffect, useState    } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useLocation } from "react-router-dom";
-import useAuthFetch from "../../utils/authFetchHook";
+import { useLocation            } from "react-router-dom";
+import { TaskModel              } from "../../models/task";
+
 import Task from "../Main/Task";
 import AddTask from "../Main/Task/AddTask";
 
 const EmployeeTask: FunctionComponent = () => {
-  const authFetch = useAuthFetch();
   const { id } = useParams();
   const { state: name } = useLocation();
 
   const navigate = useNavigate();
-  const [tasks, setTasks] = useState([]);
-  const [finishedTasks, setFinishedTasks] = useState(0);
+  const [tasks, setTasks] = useState<any>([]);
+  const [finishedTasks, setFinishedTasks] = useState<any>([]);
   const [taskStart, setTaskStart] = useState(new Date());
   const [isAddingTask, setIsAddingTask] = useState(false);
 
   useEffect(() => {
-    authFetch.get("/tasks?employeeId=" + id).then((data: any) => {
-      setTasks(data);
-    });
+    TaskModel.getWhere({ employee_id: id }).then(setTasks);
   }, []);
+
   return (
     <>
       <div className="flex items-center">
@@ -44,23 +43,15 @@ const EmployeeTask: FunctionComponent = () => {
           )
           .map(
             (
-              { deadline, title, description, is_working, _id }: any,
+              task: any,
               i: number
             ) => (
               <Task
                 key={i}
                 dataKey={i}
-                tasks={tasks}
-                setTasks={setTasks}
-                deadline={deadline}
-                title={title}
+                task={task}
                 finishedTasks={finishedTasks}
                 setFinishedTasks={setFinishedTasks}
-                description={description}
-                is_working={is_working}
-                taskStart={taskStart}
-                setTaskStart={setTaskStart}
-                _id={_id}
               />
             )
           )}
@@ -73,15 +64,13 @@ const EmployeeTask: FunctionComponent = () => {
           <div className="py-2">Add Task</div>
         </button>
 
-        {isAddingTask ? (
+        {isAddingTask && (
           <AddTask
             userId={id}
             name={name}
             setTasks={setTasks}
             setIsAddingTask={setIsAddingTask}
           />
-        ) : (
-          ""
         )}
       </div>
     </>

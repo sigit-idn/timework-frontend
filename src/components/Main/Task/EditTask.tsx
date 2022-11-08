@@ -1,53 +1,40 @@
-import { FormEvent, useState } from "react";
-import { Task } from "../../../interfaces/task";
-import useAuthFetch from "../../../utils/authFetchHook";
+import { FormEvent, useState  } from "react";
+import { TaskModel, TaskInput } from "../../../models/task";
+
+interface EditTaskProps {
+  setIsEditingTask: (value: boolean) => void;
+  setTasks: (value: TaskModel[]) => void;
+  tasks: TaskModel[];
+  task: TaskModel;
+}
 
 const EditTask = ({
   setIsEditingTask,
-  title,
   setTasks,
   tasks,
-  deadline,
-  description,
-  isWorking,
-  reportId,
-  id,
-}: any) => {
-  const [body, setBody] = useState<Task>({
-    title,
-    deadline,
-    description,
-    isWorking,
-    reportId
-  });
-  const authFetch = useAuthFetch();
-
-  const taskDeadline = new Date(
-    new Date(deadline.length ? deadline : new Date())
-      .toString()
-      .replace(/GMT.*/, "UTC")
-  )
-    .toISOString()
-    .match(/.+T\d{2}:\d{2}/);
-
+  task,
+}: EditTaskProps) => {
+  const [body, setBody] = useState<TaskInput>(task);
+  
   const inputChange = ({ target }: any) => {
     setBody({ ...body, [target.name]: target.value });
   };
   const editTask = (event: FormEvent) => {
     event.preventDefault();
 
-    authFetch
-      .put("/tasks/" + id, body)
-      .then(() => {
-        setTasks(
-          tasks?.map((task: Task) =>
-            task.id == id ? { ...task, ...body } : task
-          )
-        );
-        setIsEditingTask(false);
-      })
-  };
+    TaskModel.update(task.id!, body).then((task) => {
+      setTasks(
+        tasks?.map(({ id }: TaskModel) => (
+          task.id == id 
+            ? { ...task, isWorking: true } 
+            : task
+        ) as TaskModel)
+      );
 
+      setIsEditingTask(false);
+    });
+  };
+  
   return (
     <>
       <div
@@ -71,7 +58,7 @@ const EditTask = ({
               <label className="text-sm mb-3">Task Title</label>
               <input
                 name="title"
-                defaultValue={title}
+                defaultValue={task.title}
                 type="text"
                 placeholder="Task Title"
                 onChange={inputChange}
@@ -82,7 +69,7 @@ const EditTask = ({
               <label className="text-sm mb-3">Deadline</label>
               <input
                 name="deadline"
-                defaultValue={taskDeadline ? taskDeadline[0] : ""}
+                defaultValue={task.deadline.format("YYYY-MM-DDTHH:mm")}
                 type="datetime-local"
                 placeholder="Deadline"
                 onChange={inputChange}
@@ -96,7 +83,7 @@ const EditTask = ({
                 placeholder="Task Description"
                 onChange={inputChange}
                 className="block text-sm py-3 px-4 rounded-lg w-full border outline-none"
-                defaultValue={description}
+                defaultValue={task.description}
               ></textarea>
             </div>
           </div>

@@ -1,19 +1,22 @@
-import { useContext, useState } from "react";
+import { useContext, useState         } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { TaskContext } from "./config/contexts";
-import Login from "./pages/Login";
-import MainLayout from "./layouts/MainLayout";
-import Friends from "./components/Friends";
-import Reports from "./components/Reports/";
-import Attendance from "./components/Attendance";
-import AddEmployee from "./components/AddEmployee";
+import { WorkingTaskContext           } from "./config/contexts";
+import { TaskModel                    } from "./models/task";
+
+import Login        from "./pages/Login";
+import MainLayout   from "./layouts/MainLayout";
+import Friends      from "./components/Friends";
+import Reports      from "./components/Reports/";
+import Attendance   from "./components/Attendance";
+import AddEmployee  from "./components/AddEmployee";
 import EmployeeTask from "./components/EmployeeTasks";
-import Dashboard from "./pages/Dashboard";
+import Dashboard    from "./pages/Dashboard";
 
 function App() {
-  const [tasks, setTasks] = useState(useContext(TaskContext).tasks);
+  const [workingTask, setWorkingTask] = useState<TaskModel>();
+
   return (
-    <TaskContext.Provider value={{ tasks, setTasks }}>
+    <WorkingTaskContext.Provider value={{ workingTask, setWorkingTask }}>
       <BrowserRouter>
         <MainLayout>
           <Routes>
@@ -30,7 +33,7 @@ function App() {
           </Routes>
         </MainLayout>
       </BrowserRouter>
-    </TaskContext.Provider>
+    </WorkingTaskContext.Provider>
   );
 }
 

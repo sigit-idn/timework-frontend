@@ -6,17 +6,20 @@ import {
   Clock,
   UserPlus,
 } from "@geist-ui/react-icons";
+
 import { useNavigate } from "react-router-dom";
 import SideLink from "./SideLink";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: any) => {
   const redirect = useNavigate();
+
   const logout = () => {
     ["name", "token", "role"].forEach((localItem) =>
       localStorage.removeItem(localItem)
     );
     redirect("/login");
   };
+
   return (
     <>
       <div
@@ -74,14 +77,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: any) => {
             title="Friends"
           />
 
-          {/admin/.test(String(localStorage.getItem("role"))) ? (
+          { /admin/.test(String(localStorage.getItem("role"))) && (
             <SideLink
               className="flex items-center mt-4 py-2 px-6 "
               to="/add-employee"
               icon={<UserPlus />}
               title="Add Employee"
             />
-          ) : null}
+          ) }
 
           <SideLink
             className="flex items-center mt-4 py-2 px-6 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
@@ -102,7 +105,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: any) => {
             onClick={logout}
           >
             <LogOut />
-            <span className="mx-3">Logout</span>
+            <span className="mx-3 cursor-pointer">Logout</span>
           </span>
         </nav>
       </div>

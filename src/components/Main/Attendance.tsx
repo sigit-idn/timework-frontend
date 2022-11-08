@@ -1,48 +1,53 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import useAuthFetch from "../../utils/authFetchHook";
+import { useNavigate                      } from "react-router";
+import { AttendanceModel                  } from "../../models/attendance";
+
+type Title      = "Work Start" | "Work End" | "Break Start" | "Break End";
+type CamelTitle = "workStart"  | "workEnd"  | "breakStart"  | "breakEnd";
+
+interface AttendanceProps {
+  title: Title;
+  subtitle: string;
+  dataKey: 1 | 2 | 3 | 4;
+  attendance: AttendanceModel;
+  cta: 1 | 2 | 3 | 4;
+  setCta: (cta: 1 | 2 | 3 | 4) => void;
+}
 
 const Attendance = ({
   title,
   setCta,
   subtitle,
   dataKey,
-  attendances,
+  attendance,
   cta,
-  name,
-}: any) => {
-  const authFetch = useAuthFetch();
+}: AttendanceProps) => {
   const redirect = useNavigate();
-  const formatTime = (time: string) => new Date(time).toLocaleTimeString();
-  const [isClicked, setIsClicked] = useState<boolean>(false);
-  const [time, setTime] = useState<string>("");
+  const [isClicked, setIsClicked] = useState(false);
   
-  (String as any).prototype.camelize = function () {
-    return this.replace(/_(\w)/g, (_: string, p1: string) => p1.toUpperCase());
-  };
+  useEffect(() => {
+    setIsClicked(
+      Boolean(
+        attendance 
+        && attendance[title.camelize<CamelTitle>()]
+        )
+      );
+  }, [attendance, title]);
 
   useEffect(() => {
-
-    setIsClicked(Boolean(attendances && attendances[name.camelize()]));
-    setTime(formatTime(attendances && attendances[name.camelize()]));
-    console.log({attendances, name, time});
-    
-  }, [attendances, name]);
-
-  useEffect(() => {
-    if (cta === dataKey && isClicked) setCta(dataKey + 1);
+    if (cta === dataKey && isClicked) setCta(dataKey + 1 as 1 | 2 | 3 | 4);
   }, [cta, isClicked, dataKey, setCta]);
+  
 
   const attend = useCallback(() => {
-    authFetch
-      .post("/attendances/" + name)
+    AttendanceModel
+      .attend(title.snakeize())
       .then((res: any) => {
-        setTime(formatTime(res[name.camelize()]));
-        setIsClicked(true);
-        if (name === "work_start")
-          localStorage.setItem("task_start", new Date().toLocaleString());
-      })
-      .catch((url) => redirect(url));
+
+      setIsClicked(true);
+      if (title === "Work Start")
+        localStorage.setItem("task_start", new Date().toLocaleString());
+    });
   }, []);
 
   return (
@@ -52,8 +57,8 @@ const Attendance = ({
           cta === dataKey
             ? "bg-indigo-500 shadow-lg hover:shadow-2xl"
             : isClicked
-            ? "bg-gray-300 shadow-inner"
-            : "bg-white hover:shadow-2xl"
+              ? "bg-gray-300 shadow-inner"
+              : "bg-white hover:shadow-2xl"
         }`}
       >
         <div className="mx-3">
@@ -62,7 +67,7 @@ const Attendance = ({
               cta === dataKey ? 100 : 700
             }`}
           >
-            {!isClicked ? title : time}
+            {!isClicked ? title : new Date(attendance[title.camelize<CamelTitle>()]!).format("hh:mm:ss")}
           </h4>
           <div className="text-gray-400">{!isClicked ? subtitle : title}</div>
         </div>

@@ -64,14 +64,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: any) => {
 
         <nav className="mt-10">
           <SideLink
-            className="flex items-center mt-4 py-2 px-6 bg-gray-700 bg-opacity-25 text-gray-100"
             to="/"
             icon={<Home />}
             title="Dashboard"
           />
 
           <SideLink
-            className="flex items-center mt-4 py-2 px-6 "
             to="/friends"
             icon={<Users />}
             title="Friends"
@@ -79,7 +77,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: any) => {
 
           { /admin/.test(String(localStorage.getItem("role"))) && (
             <SideLink
-              className="flex items-center mt-4 py-2 px-6 "
               to="/add-employee"
               icon={<UserPlus />}
               title="Add Employee"
@@ -87,14 +84,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: any) => {
           ) }
 
           <SideLink
-            className="flex items-center mt-4 py-2 px-6 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
             to="/attendances"
             icon={<Clock />}
             title="Attendances"
           />
 
           <SideLink
-            className="flex items-center mt-4 py-2 px-6 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
             to="/reports"
             icon={<FileText />}
             title="Reports"

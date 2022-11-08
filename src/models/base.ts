@@ -1,5 +1,3 @@
-
-
 export abstract class BaseModel {
 	protected static readonly baseUrl: string = process.env.REACT_APP_API_URL!
 	public static resourcePath: string = ""

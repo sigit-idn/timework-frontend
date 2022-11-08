@@ -12,10 +12,6 @@ export class AttendanceModel extends BaseModel {
 		public workEnd?   : Date
 	) {
 		super()
-		this.workStart = new Date(workStart)
-		this.breakStart = breakStart ? new Date(breakStart) : undefined
-		this.breakEnd = breakEnd ? new Date(breakEnd) : undefined
-		this.workEnd = workEnd ? new Date(workEnd) : undefined
 	}
 
 	static async attend(action: "work_start" | "break_start" | "break_end" | "work_end"): Promise<AttendanceModel> {

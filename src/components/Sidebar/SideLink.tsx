@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const SideLink = ({ to, icon, title }: { to: string; icon: Element; title: string }) => {
+const SideLink = ({ to, icon, title }: { to: string; icon: React.ReactNode; title: string }) => {
   return (
     <Link
       className={`flex items-center mt-4 py-2 px-6 hover:bg-gray-800 ${

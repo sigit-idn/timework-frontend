@@ -1,16 +1,18 @@
-import { useContext, useState         } from "react";
+import { useState                     } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WorkingTaskContext           } from "./config/contexts";
 import { TaskModel                    } from "./models/task";
+import { Role                         } from "./enums/role";
 
-import Login        from "./pages/Login";
 import MainLayout   from "./layouts/MainLayout";
-import Friends      from "./components/Friends";
-import Reports      from "./components/Reports/";
-import Attendance   from "./components/Attendance";
-import AddEmployee  from "./components/AddEmployee";
-import EmployeeTask from "./components/EmployeeTasks";
+import Login        from "./pages/Login";
+import Friends      from "./pages/Friends";
+import Reports      from "./pages/Reports";
+import Attendance   from "./pages/Attendance";
+import AddEmployee  from "./pages/AddEmployee";
+import EmployeeTask from "./pages/EmployeeTasks";
 import Dashboard    from "./pages/Dashboard";
+import Guard        from "./router/Guard";
 
 function App() {
   const [workingTask, setWorkingTask] = useState<TaskModel>();
@@ -20,16 +22,24 @@ function App() {
       <BrowserRouter>
         <MainLayout>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="friends" element={<Friends />} />
-            <Route path="reports" element={<Reports />} />
-            <Route path="attendances" element={<Attendance />} />
-            <Route path="add-employee" element={<AddEmployee />} />
-            <Route path="friends/:id/tasks" element={<EmployeeTask />} />
-            <Route path="friends/:id/edit" element={<AddEmployee />} />
-            <Route path="friends/:id/reports" element={<Reports />} />
-            <Route path="friends/:id/attendances" element={<Attendance />} />
-            <Route path="login" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+
+            <Route path="/">
+              <Route path=""            element={<Guard role={Role.EMPLOYEE}><Dashboard /></Guard>} />
+              <Route path="friends"     element={<Guard role={Role.EMPLOYEE}><Friends /></Guard>} />
+              <Route path="reports"     element={<Guard role={Role.EMPLOYEE}><Reports /></Guard>} />
+              <Route path="attendances" element={<Guard role={Role.EMPLOYEE}><Attendance /></Guard>} />
+            </Route>
+
+            <Route path="/friends/:employeeId/*">
+              <Route path="tasks"       element={<Guard role={Role.EMPLOYEE}><EmployeeTask /></Guard>} />
+              <Route path="reports"     element={<Guard role={Role.EMPLOYEE}><Reports /></Guard>} />
+              <Route path="attendances" element={<Guard role={Role.EMPLOYEE}><Attendance /></Guard>} />
+            </Route>
+
+            <Route path="friends/:employeeId/edit" element={<Guard role={Role.ADMIN}><AddEmployee /></Guard>} />
+            <Route path="add-employee"     element={<Guard role={Role.ADMIN}><AddEmployee /></Guard>} />
+
           </Routes>
         </MainLayout>
       </BrowserRouter>

@@ -1,9 +1,9 @@
 import { FormEvent, useState  } from "react";
 import { TaskInput, TaskModel } from "../../../models/task";
 
-const AddTask = ({ setIsAddingTask, userId, name }: any) => {
+const AddTask = ({ setIsAddingTask, employeeId, name }: any) => {
   const [body, setBody] = useState<TaskInput>({
-    employeeId: userId,
+    employeeId,
   } as TaskInput);
 
   const inputChange = ({ target }: any) => {

@@ -3,13 +3,13 @@ import { FunctionComponent      } from "react";
 import { useEffect, useState    } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useLocation            } from "react-router-dom";
-import { TaskModel              } from "../../models/task";
+import { TaskModel              } from "../models/task";
 
-import Task from "../Main/Task";
-import AddTask from "../Main/Task/AddTask";
+import Task    from "../components/Main/Task";
+import AddTask from "../components/Main/Task/AddTask";
 
 const EmployeeTask: FunctionComponent = () => {
-  const { id } = useParams();
+  const { employeeId } = useParams();
   const { state: name } = useLocation();
 
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const EmployeeTask: FunctionComponent = () => {
   const [isAddingTask, setIsAddingTask] = useState(false);
 
   useEffect(() => {
-    TaskModel.getWhere({ employee_id: id }).then(setTasks);
+    TaskModel.getWhere({ employeeId }).then(setTasks);
   }, []);
 
   return (
@@ -66,7 +66,7 @@ const EmployeeTask: FunctionComponent = () => {
 
         {isAddingTask && (
           <AddTask
-            userId={id}
+            employeeId={employeeId}
             name={name}
             setTasks={setTasks}
             setIsAddingTask={setIsAddingTask}

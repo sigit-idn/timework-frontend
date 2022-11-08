@@ -5,7 +5,7 @@ import { AttendanceModel } from "../models/attendance";
 
 const Attendance = () => {
   const navigate = useNavigate();
-  const { id: employeeId } = useParams();
+  const { employeeId } = useParams();
   const { state } = useLocation();
   const [attendances, setAttendances] = useState<AttendanceModel[]>([]);
   const [month, setMonth] = useState(new Date().toLocaleDateString().replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"));

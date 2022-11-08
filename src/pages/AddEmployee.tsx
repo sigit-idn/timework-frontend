@@ -3,15 +3,12 @@ import { ChangeEvent, useEffect, useState    } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { EmployeeInput, EmployeeModel        } from "../models/employee";
 
-import useAuthorization from "../utils/authourizationHook";
 
 const AddEmployee = () => {
   const navigate = useNavigate();
-  const authorize = useAuthorization();
   const { state } = useLocation();
-  const { id: employeeId } = useParams();
+  const { employeeId } = useParams();
 
-  authorize("admin");
   const [userData, setUserData] = useState<EmployeeModel|null>(null);
   const [body, setBody] = useState<EmployeeInput|null>(null);
   

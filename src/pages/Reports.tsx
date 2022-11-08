@@ -1,9 +1,9 @@
 import { ArrowLeft                } from "@geist-ui/react-icons";
 import { useEffect, useState      } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ReportModel              } from "../../models/report";
+import { ReportModel              } from "../models/report";
 
-import Report from "./Report";
+import Report from "../components/Reports/Report";
 
 const Reports = () => {
   const navigate = useNavigate();

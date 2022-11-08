@@ -3,7 +3,6 @@ import { WorkingTaskContext              } from "../config/contexts";
 import { AttendanceModel                 } from "../models/attendance";
 import { useContext, useEffect, useState } from "react";
 
-import useAuthorization from "../utils/authourizationHook";
 import AddTask          from "../components/Main/Task/AddTask";
 import Attendance       from "../components/Main/Attendance";
 import Task             from "../components/Main/Task";
@@ -11,10 +10,9 @@ import Task             from "../components/Main/Task";
 const Dashboard = () => {
   const [cta, setCta] = useState<1 | 2 | 3 | 4>(1);
   const [clock, setClock] = useState<Date>(new Date());
-  const authorize = useAuthorization();
   const [attendance, setAttendance] = useState<AttendanceModel>();
   const [finishedTasks, setFinishedTasks] = useState<TaskModel[]>([]);
-  const [taskStart, setTaskStart] = useState(new Date());
+  const [_taskStart, setTaskStart] = useState(new Date());
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [tasks, setTasks] = useState<TaskModel[]>([]);
   const { setWorkingTask } = useContext(WorkingTaskContext);
@@ -24,7 +22,6 @@ const Dashboard = () => {
     TaskModel.getAll().then(setTasks);
 
     const tickInterval = setInterval(() => setClock(new Date()), 1000);
-    authorize("employee");
     
     AttendanceModel.getWhere({ date: new Date().format("yyyy-MM-dd") })
     .then(([data]: AttendanceModel[]) => {

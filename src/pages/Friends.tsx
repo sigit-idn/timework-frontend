@@ -1,7 +1,7 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { Link                                   } from "react-router-dom";
 import { EmployeeModel                          } from "../models/employee";
-import { handleFetchError } from "../utils/handleFetchError";
+import { handleFetchError                       } from "../utils/handleFetchError";
 
 const Friends: FunctionComponent = () => {
   const [friends, setFriends] = useState<EmployeeModel[]>([]);

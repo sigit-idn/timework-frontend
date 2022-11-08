@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate                                 } from "react-router-dom";
 
-import bgLogin from "../bg-login.jpg";
+import bgLogin from "../assets/img/bg-login.jpg";
 
 const Login = () => {
   const navigate = useNavigate();

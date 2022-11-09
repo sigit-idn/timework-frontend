@@ -79,6 +79,7 @@ const Attendance: React.FC = () => {
               <tbody className="bg-white">
                 {attendances.map(
                   ({
+                    id,
                     date,
                     workStart,
                     breakStart,
@@ -86,7 +87,7 @@ const Attendance: React.FC = () => {
                     workEnd,
                     totalWorkSeconds
                   }: AttendanceModel) => (
-                      <tr key={date}>
+                      <tr key={id}>
                         <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
                           {new Date(date).toLocaleDateString()}
                         </td>

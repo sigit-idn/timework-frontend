@@ -4,6 +4,7 @@ export class TaskModel extends BaseModel {
 	static resourcePath = "tasks"
 
 	public constructor(
+		public id         : string,
 		public title      : string,
 		public employeeId?: string,
 		public reportId?  : string,
@@ -16,20 +17,30 @@ export class TaskModel extends BaseModel {
 		super()
 	}
 
+	public static fromJson(json: Record<string, any>): TaskModel {
+		return new TaskModel(
+			json.id,
+			json.title,
+			json.employeeId,
+			json.reportId,
+			json.isWorking,
+			new Date(json.deadline),
+			json.description,
+			json.taskStart,
+			json.taskEnd
+		)
+	}
+
 	static async start(id: string): Promise<TaskModel> {
-		const res = await fetch(`${BaseModel.baseUrl}/${this.resourcePath}/${id}/start`, {
-			...BaseModel.options,
-			method: "POST",
-		})
-		return await res.json()
+		const data = await BaseModel._fetch("POST", `${this.resourcePath}/${id}/start`)
+
+		return this.fromJson(data)
 	}
 
 	static async finish(id: string): Promise<TaskModel> {
-		const res = await fetch(`${BaseModel.baseUrl}/${this.resourcePath}/${id}/finish`, {
-			...BaseModel.options,
-			method: "POST",
-		})
-		return await res.json()
+		const data = await BaseModel._fetch("POST", `${this.resourcePath}/${id}/finish`)
+		
+		return this.fromJson(data)
 	}
 
 	get isOverdue(): boolean {

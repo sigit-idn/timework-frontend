@@ -19,7 +19,9 @@ const Dashboard: React.FC = () => {
   
   
   useEffect(() => {
-    TaskModel.getAll().then(setTasks).catch((err) => console.log({err}));
+    TaskModel.getAll().then(setTasks).catch(console.error);
+
+    
 
     const tickInterval = setInterval(() => setClock(new Date()), 1000);
     
@@ -30,14 +32,14 @@ const Dashboard: React.FC = () => {
       // setCta((data && Object.keys(data).length - 1) ?? 1);
       setTaskStart(new Date());
     });
-
+    
     return () => clearInterval(tickInterval);
   }, []);
-
+  
   useEffect(() => {
     if (!tasks.length) return;
 
-    const workingTask = tasks.find((task) => task.isWorking);
+    const workingTask = tasks.find(({ isWorking }) => isWorking);
 
     if (!workingTask || !setWorkingTask) return;
     

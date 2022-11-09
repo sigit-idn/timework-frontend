@@ -8,7 +8,7 @@ import {
 } from "@geist-ui/react-icons";
 import React from "react";
 
-import { useNavigate } from "react-router-dom";
+import { logout } from "../../auth/logout";
 import SideLink from "./SideLink";
 
 interface SidebarProps {
@@ -20,14 +20,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   isSidebarOpen,
   setIsSidebarOpen,
 }) => {
-  const redirect = useNavigate();
-
-  const logout = () => {
-    ["name", "token", "role"].forEach((localItem) =>
-      localStorage.removeItem(localItem)
-    );
-    redirect("/login");
-  };
 
   return (
     <>

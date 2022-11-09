@@ -12,9 +12,10 @@ import Attendance   from "./pages/Attendance";
 import AddEmployee  from "./pages/AddEmployee";
 import EmployeeTask from "./pages/EmployeeTasks";
 import Dashboard    from "./pages/Dashboard";
+import NotFound     from "./pages/NotFound";
 import Guard        from "./router/Guard";
 
-function App(): JSX.Element {
+const App: React.FC = () => {
   const [workingTask, setWorkingTask] = useState<TaskModel>();
 
   return (
@@ -39,6 +40,8 @@ function App(): JSX.Element {
 
             <Route path="friends/:employeeId/edit" element={<Guard role={Role.ADMIN}><AddEmployee /></Guard>} />
             <Route path="add-employee"             element={<Guard role={Role.ADMIN}><AddEmployee /></Guard>} />
+
+            <Route path="*" element={<NotFound />} />
 
           </Routes>
         </MainLayout>

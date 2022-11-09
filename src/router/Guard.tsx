@@ -1,11 +1,11 @@
 import React from "react"
 
-import { Role             } from "../enums/role";
 import { Navigate         } from "react-router-dom";
-import { useAuthorization } from "../utils/authourizationHook";
+import { Role             } from "../enums/role";
+import { useAuthorization } from "../utils/useAuthourization";
 
 
-export default function Guard({ role, children }: { role: Role, children: React.ReactNode }) {	
+const Guard: React.FC<{ role: Role }> = ({ role, children }) => {
   const authorize = useAuthorization();
 
 	if (!authorize(role)) {
@@ -14,3 +14,5 @@ export default function Guard({ role, children }: { role: Role, children: React.
 
 	return <>{children}</>;
 }
+
+export default Guard;

@@ -3,7 +3,8 @@ import { BaseModel    } from "./base"
 export class AttendanceModel extends BaseModel {
 	static resourcePath = 'attendances'
 	
-	constructor(
+	public constructor(
+		public id         : string,
 		public employeeId : string,
 		public date       : string,
 		public workStart  : Date,
@@ -14,27 +15,35 @@ export class AttendanceModel extends BaseModel {
 		super()
 	}
 
-	static async attend(action: "work_start" | "break_start" | "break_end" | "work_end"): Promise<AttendanceModel> {
-		const res = await fetch(`${process.env.REACT_APP_API_URL}/${this.resourcePath}/${action}`, {
-			...BaseModel.options,
-			method: 'POST',
-		})
+	public static fromJson(json: Record<string, any>): AttendanceModel {
+		return new AttendanceModel(
+			json.id,
+			json.employeeId,
+			json.date,
+			new Date(json.workStart),
+			json.breakStart ? new Date(json.breakStart) : undefined,
+			json.breakEnd ? new Date(json.breakEnd) : undefined,
+			json.workEnd ? new Date(json.workEnd) : undefined
+		)
+	}
 
-		return await res.json()
+	static async attend(
+		action: "work_start" | "break_start" | "break_end" | "work_end"
+	): Promise<AttendanceModel> {
+		const data = BaseModel._fetch("POST", `${this.resourcePath}/${action}`)
+
+		return this.fromJson(data)
 	}
 
 	get totalWorkSeconds(): number {
 		if (!this.workEnd || !this.breakStart || !this.breakEnd) return 0
 
-		const workStart  = new Date(this.workStart)
-		const breakStart = new Date(this.breakStart)
-		const breakEnd   = new Date(this.breakEnd)
-		const workEnd    = new Date(this.workEnd)
-
 		const workSeconds = (
-			( workEnd.getTime() - workStart.getTime() ) -
-			( breakEnd.getTime() - breakStart.getTime() )
+			( this.workEnd.getTime() - this.workStart.getTime() ) -
+			( this.breakEnd.getTime() - this.breakStart.getTime() )
 		) / 1000
+
+		console.log({ workSeconds, workEnd: this.workEnd, workStart: this.workStart, breakEnd: this.breakEnd, breakStart: this.breakStart })
 
 		return workSeconds
 	}

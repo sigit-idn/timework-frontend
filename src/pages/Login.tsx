@@ -1,44 +1,44 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate                                        } from "react-router-dom";
+import { login                                              } from "../auth/login";
+import { logout                                             } from "../auth/logout";
 
 
-const Login = (): React.ReactElement => {
+interface Credentials {
+  email: string;
+  password: string;
+}
+
+const Login: React.FC = () => {
   const navigate = useNavigate();
 
-  const [input, setInput] = useState({});
-  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [input, setInput] = useState<Credentials>({} as Credentials);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [error] = useState(sessionStorage.getItem("authError"));
 
   const handlerChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [event.target.name]: event.target.value });
   };
 
-  useEffect(() => localStorage.clear(), []);
+  useEffect(() => {
+    logout();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    return () => {
+      sessionStorage.removeItem("authError");
+    };
+  }, []);
+
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    setIsLoggingIn(true);
 
-    setIsSigningIn(true);
+    login(input).then(() => {
+      navigate("/");
 
-    await fetch(process.env.REACT_APP_API_URL + "/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(input),
-    })
-      .then(async (res) => {
-        const { data } = await res.json();
-
-        for (const key in data) {
-          localStorage.setItem(key, data[key]);
-        }
-
-        navigate("/");
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setIsSigningIn(false));
+      setIsLoggingIn(false);
+    });
   };
+
 
   return (
     <div>
@@ -66,11 +66,15 @@ const Login = (): React.ReactElement => {
             <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
           </div>
           <div className="w-full py-6 z-20">
-            <h1 className="my-6">
-              <p className="text-gray-100 text-5xl font-extralight">
+            <h1 className="text-gray-100 text-5xl font-extralight">
                 Please Login
-              </p>
             </h1>
+
+            {error && (
+              <p className="text-white p-4 rounded-lg mt-4">
+                {error}
+              </p>
+            )}
 
             <form
               onSubmit={handleSubmit}
@@ -97,18 +101,17 @@ const Login = (): React.ReactElement => {
                 />
               </div>
               <div className="px-4 pb-2 pt-4">
-                <button 
+                <button
                   className={
-                    `uppercase block w-full p-4 text-lg rounded-full focus:outline-none ${
-                      isSigningIn 
-                      ? "bg-gray-500" 
+                    `uppercase block w-full p-4 text-lg rounded-full focus:outline-none ${isLoggingIn
+                      ? "bg-gray-500"
                       : "bg-indigo-500 hover:bg-indigo-600"
                     }`
                   }
                   type="submit"
-                  disabled={isSigningIn}
-                  >
-                    Login
+                  disabled={isLoggingIn}
+                >
+                  Login
                 </button>
               </div>
             </form>

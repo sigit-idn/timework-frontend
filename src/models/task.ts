@@ -1,8 +1,7 @@
-import { resourcePath } from "../decorators/resourcePath"
 import { BaseModel } from "./base"
 
-@resourcePath('tasks')
 export class TaskModel extends BaseModel {
+	static resourcePath = "tasks"
 
 	public constructor(
 		public title      : string,

@@ -1,35 +1,32 @@
-import { FormEvent, useState  } from "react";
-import { TaskModel, TaskInput } from "../../../models/task";
+import React, { FormEvent, useState } from "react";
+import { TaskModel, TaskInput       } from "../../../models/task";
+
 
 interface EditTaskProps {
   setIsEditingTask: (value: boolean) => void;
-  setTasks: (value: TaskModel[]) => void;
-  tasks: TaskModel[];
-  task: TaskModel;
+  setTasks        : React.Dispatch<React.SetStateAction<TaskModel[]>>;
+  task            : TaskModel;
 }
 
-const EditTask = ({
+const EditTask: React.FC<EditTaskProps> = ({
   setIsEditingTask,
   setTasks,
-  tasks,
   task,
-}: EditTaskProps) => {
+}) => {
   const [body, setBody] = useState<TaskInput>(task);
   
-  const inputChange = ({ target }: any) => {
+  const inputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setBody({ ...body, [target.name]: target.value });
   };
   const editTask = (event: FormEvent) => {
     event.preventDefault();
 
-    TaskModel.update(task.id!, body).then((task) => {
-      setTasks(
-        tasks?.map(({ id }: TaskModel) => (
-          task.id == id 
-            ? { ...task, isWorking: true } 
-            : task
-        ) as TaskModel)
-      );
+    TaskModel.update(task.id, body).then((task) => {
+      setTasks((tasks) => {
+        const index = tasks.findIndex((t) => t.id === task.id);
+        tasks[index] = task;
+        return [...tasks];
+      });
 
       setIsEditingTask(false);
     });

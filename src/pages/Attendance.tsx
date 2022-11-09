@@ -1,20 +1,20 @@
-import { ArrowLeft } from "@geist-ui/react-icons";
-import { ChangeEvent, useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { AttendanceModel } from "../models/attendance";
+import { ArrowLeft                               } from "@geist-ui/react-icons";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams     } from "react-router-dom";
+import { AttendanceModel                         } from "../models/attendance";
 
-const Attendance = () => {
+const Attendance: React.FC = () => {
   const navigate = useNavigate();
   const { employeeId } = useParams();
   const { state } = useLocation();
-  const [attendances, setAttendances] = useState<AttendanceModel[]>([]);
-  const [month, setMonth] = useState(new Date().toLocaleDateString().replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"));
+  const [ attendances, setAttendances ] = useState<AttendanceModel[]>([]);
+  const [ month, setMonth ] = useState(new Date().format("YYYY-MM"));
 
   useEffect(() => {
-    const params: Record<string, string> = { month };
-    if (employeeId) params.employeeId = employeeId;
+    const where: Record<string, string> = { month };
+    if (employeeId) where.employeeId = employeeId;
 
-    AttendanceModel.getWhere(params).then(setAttendances);
+    AttendanceModel.getWhere(where).then(setAttendances);
   }, [month]);
 
   return (
@@ -30,7 +30,7 @@ const Attendance = () => {
             </button>
             <h1 className="text-xl ml-3 font-semibold">
               {state}
-              <span className="font-light">'s Attendances</span>
+              <span className="font-light">&aposs Attendances</span>
             </h1>
           </div>
         ) : null}
@@ -84,14 +84,8 @@ const Attendance = () => {
                     breakStart,
                     breakEnd,
                     workEnd,
-                  }: any) => {
-                    const workSeconds =
-                      new Date(workEnd).getTime() -
-                      new Date(workStart).getTime() +
-                      new Date(breakStart).getTime() -
-                      new Date(breakEnd).getTime();
-                    
-                    return (
+                    totalWorkSeconds
+                  }: AttendanceModel) => (
                       <tr key={date}>
                         <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
                           {new Date(date).toLocaleDateString()}
@@ -130,16 +124,14 @@ const Attendance = () => {
                         </td>
 
                         <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
-                          { workSeconds < 0
-                            ? "Unset"
-                            : Math.floor(workSeconds / 60 / 60 / 1000) +
-                              ":" +
-                              (workSeconds % 60)
-                            }
+                          { totalWorkSeconds ? (
+                            new Date(totalWorkSeconds * 1000).format("HH:mm:ss")
+                          ) : (
+                            <span className="text-gray-500">Unset</span>
+                          )}
                         </td>
                       </tr>
-                    );
-                  }
+                    )
                 )}
               </tbody>
             </table>

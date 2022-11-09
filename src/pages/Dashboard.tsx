@@ -1,13 +1,13 @@
-import { TaskModel                       } from "../models/task";
-import { WorkingTaskContext              } from "../config/contexts";
-import { AttendanceModel                 } from "../models/attendance";
-import { useContext, useEffect, useState } from "react";
+import { TaskModel                              } from "../models/task";
+import { WorkingTaskContext                     } from "../config/contexts";
+import { AttendanceModel                        } from "../models/attendance";
+import React, { useContext, useEffect, useState } from "react";
 
 import AddTask          from "../components/Main/Task/AddTask";
 import Attendance       from "../components/Main/Attendance";
 import Task             from "../components/Main/Task";
 
-const Dashboard = () => {
+const Dashboard: React.FC = () => {
   const [cta, setCta] = useState<1 | 2 | 3 | 4>(1);
   const [clock, setClock] = useState<Date>(new Date());
   const [attendance, setAttendance] = useState<AttendanceModel>();
@@ -19,7 +19,7 @@ const Dashboard = () => {
   
   
   useEffect(() => {
-    TaskModel.getAll().then(setTasks);
+    TaskModel.getAll().then(setTasks).catch((err) => console.log({err}));
 
     const tickInterval = setInterval(() => setClock(new Date()), 1000);
     
@@ -35,9 +35,15 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (tasks.length) {
-      setWorkingTask(tasks.find(({ isWorking }) => isWorking));
-    }
+    if (!tasks.length) return;
+
+    const workingTask = tasks.find((task) => task.isWorking);
+
+    if (!workingTask || !setWorkingTask) return;
+    
+    setWorkingTask(workingTask);
+    setTaskStart(new Date(workingTask.taskStart as string));
+
   }, [tasks]);
 
   return (

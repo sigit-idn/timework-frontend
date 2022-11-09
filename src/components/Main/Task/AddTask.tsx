@@ -1,19 +1,36 @@
-import { FormEvent, useState  } from "react";
-import { TaskInput, TaskModel } from "../../../models/task";
+import React, { FormEvent, useState } from "react";
+import { TaskInput, TaskModel       } from "../../../models/task";
 
-const AddTask = ({ setIsAddingTask, employeeId, name }: any) => {
-  const [body, setBody] = useState<TaskInput>({
+
+interface AddTaskProps {
+  setIsAddingTask: React.Dispatch<React.SetStateAction<boolean>>;
+  employeeId?    : string;
+  name?          : string;
+  setTasks?      : React.Dispatch<React.SetStateAction<TaskModel[]>>;
+}
+
+const AddTask: React.FC<AddTaskProps> = ({ 
+  setIsAddingTask,
+  employeeId,
+  name,
+  setTasks
+}) => {
+  const [body, setBody] = useState<Partial<TaskInput>>({
     employeeId,
-  } as TaskInput);
+  });
 
-  const inputChange = ({ target }: any) => {
+  const inputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setBody({ ...body, [target.name]: target.value });
   };
 
   const addTask = (event: FormEvent) => {
     event.preventDefault();
 
-    TaskModel.create(body).then((task) => {
+    TaskModel.create(body).then(() => {
+      if (setTasks) {
+        setTasks((tasks) => [...tasks, body as TaskModel]);
+      }
+
       setIsAddingTask(false);
     });
   };

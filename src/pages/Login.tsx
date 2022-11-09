@@ -1,9 +1,8 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useNavigate                                 } from "react-router-dom";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useNavigate                                        } from "react-router-dom";
 
-import bgLogin from "../assets/img/bg-login.jpg";
 
-const Login = () => {
+const Login = (): React.ReactElement => {
   const navigate = useNavigate();
 
   const [input, setInput] = useState({});
@@ -31,7 +30,7 @@ const Login = () => {
       .then(async (res) => {
         const { data } = await res.json();
 
-        for (let key in data) {
+        for (const key in data) {
           localStorage.setItem(key, data[key]);
         }
 
@@ -45,8 +44,8 @@ const Login = () => {
     <div>
       <section className="min-h-screen flex items-stretch text-white ">
         <div
-          className={`lg:flex w-1/2 hidden bg-gray-800 bg-no-repeat bg-cover relative items-center [background-image:url('${bgLogin}')]`}
-          style={{ backgroundImage: `url(${bgLogin})` }}
+          className={`lg:flex w-1/2 hidden bg-gray-800 bg-no-repeat bg-cover relative items-center`}
+          style={{ backgroundImage: `url('/img/bg-login.jpg')` }}
         >
           <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
           <div className="w-full px-24 z-10">
@@ -61,8 +60,8 @@ const Login = () => {
         </div>
         <div className="lg:w-1/2 w-full flex items-center justify-center text-center md:px-16 px-0 z-0 bg-gray-800">
           <div
-            className={`absolute lg:hidden z-10 inset-0 bg-gray-500 bg-no-repeat bg-cover items-center [background-image:url(${bgLogin})]`}
-            style={{ backgroundImage: `url(${bgLogin})` }}
+            className={`absolute lg:hidden z-10 inset-0 bg-gray-500 bg-no-repeat bg-cover items-center`}
+            style={{ backgroundImage: `url('/img/bg-login.jpg')` }}
           >
             <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
           </div>
@@ -100,7 +99,11 @@ const Login = () => {
               <div className="px-4 pb-2 pt-4">
                 <button 
                   className={
-                    `uppercase block w-full p-4 text-lg rounded-full focus:outline-none ${isSigningIn ? "bg-gray-500" : "bg-indigo-500 hover:bg-indigo-600"}`
+                    `uppercase block w-full p-4 text-lg rounded-full focus:outline-none ${
+                      isSigningIn 
+                      ? "bg-gray-500" 
+                      : "bg-indigo-500 hover:bg-indigo-600"
+                    }`
                   }
                   type="submit"
                   disabled={isSigningIn}

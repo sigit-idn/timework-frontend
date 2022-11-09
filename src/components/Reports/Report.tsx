@@ -1,36 +1,42 @@
-import { ChevronDown } from "@geist-ui/react-icons";
-import { useState    } from "react";
-import { ReportModel } from "../../models/report";
+import React, { useState } from "react";
+import { ChevronDown     } from "@geist-ui/react-icons";
+import { ReportModel     } from "../../models/report";
+import { TaskModel       } from "../../models/task";
 
 import Task from "./Task";
 
+
 interface ReportProps {
   report: ReportModel;
-  setReports: Function;
+  setReports: React.Dispatch<React.SetStateAction<ReportModel[]>>;
 }
 
-const Report = ({
-  report: { tasks, notes, date, id: reportId },
-  setReports,
-}: ReportProps) => {
+const Report: React.FC<ReportProps> = ({ 
+  report, 
+  setReports 
+}) => {
   const [isShown, setIsShown] = useState(
-    new Date().format("yyyy-mm-dd") === date
+    new Date().format("yyyy-mm-dd") === report.date
   );
-  const [isEditing, setIsEditing] = useState(!notes);
-  const [editNotes, setEditNotes] = useState("");
+  const [isEditing, setIsEditing] = useState(!report.notes);
+  const [editNotes, setEditNotes] = useState(report.notes);
 
   const editReport = () => {
     setIsEditing(!isEditing);
 
     if (isEditing) {
-      ReportModel.update(reportId!, { notes: editNotes })
-        .then(() => 
-            setReports((reports: ReportModel[]) =>
-              reports.map((report: ReportModel) =>
-                report.id === reportId ? { ...report, notes: editNotes } : report
-              )
-            )
-        )
+      ReportModel.update(report.id, { notes: editNotes })
+        .then(() => {
+          setReports((reports: ReportModel[]) => {
+            return reports.map(({ id }: ReportModel) => {
+              if (id === report.id) {
+                return { ...report, notes: editNotes };
+              }
+
+              return report;
+            });
+          });
+        })
         .catch((err) => console.error(err));
     }
   };    
@@ -43,7 +49,7 @@ const Report = ({
             onClick={() => setIsShown(!isShown)}
             className="px-6 py-3 flex justify-between items-center border-b cursor-pointer border-gray-300 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"
           >
-            {new Date(date).toLocaleDateString()}
+            {new Date(report.date).toLocaleDateString()}
             <ChevronDown
               size={20}
               className={`transition transform ${isShown ? "rotate-180" : ""}`}
@@ -55,20 +61,14 @@ const Report = ({
               isShown ? "scale-y-100 block" : "scale-y-0 hidden"
             }`}
           >
-            {tasks?.map(
-              (
-                { taskStart, taskEnd, title, description, id }: any,
-                i: number
-              ) => (
+            {report.tasks?.map(
+              (task: TaskModel, i: number) => (
                   <Task
                     key={i}
                     setReports={setReports}
-                    id={id}
-                    reportId={reportId}
-                    taskStart={taskStart}
-                    taskEnd={taskEnd}
-                    title={title}
-                    description={description}
+                    task={task}
+                    addTask={task}
+                    isAdding={false}
                   />
               )
             )}
@@ -82,11 +82,11 @@ const Report = ({
             {isEditing ? (
               <textarea
                 className="text-gray-600 my-2 bg-gray-100 bg-opacity-30 rounded border-0 ring-1 ring-gray-200 focus:ring-indigo-500 w-full"
-                defaultValue={notes}
-                onChange={({ target }: any) => setEditNotes(target.value)}
+                defaultValue={report.notes}
+                onChange={({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>) => setEditNotes(value)}
               />
             ) : (
-              <p className="text-gray-600 my-2 whitespace-pre-line">{notes}</p>
+              <p className="text-gray-600 my-2 whitespace-pre-line">{report.notes}</p>
             )}
             <div>
               <button

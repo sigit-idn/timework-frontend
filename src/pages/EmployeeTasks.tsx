@@ -1,20 +1,19 @@
-import { ArrowLeft              } from "@geist-ui/react-icons";
-import { FunctionComponent      } from "react";
-import { useEffect, useState    } from "react";
-import { useNavigate, useParams } from "react-router";
-import { useLocation            } from "react-router-dom";
-import { TaskModel              } from "../models/task";
+import { ArrowLeft                  } from "@geist-ui/react-icons";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams     } from "react-router";
+import { useLocation                } from "react-router-dom";
+import { TaskModel                  } from "../models/task";
 
 import Task    from "../components/Main/Task";
 import AddTask from "../components/Main/Task/AddTask";
 
-const EmployeeTask: FunctionComponent = () => {
+const EmployeeTask: React.FC = () => {
   const { employeeId } = useParams();
   const { state: name } = useLocation();
 
   const navigate = useNavigate();
-  const [tasks, setTasks] = useState<any>([]);
-  const [finishedTasks, setFinishedTasks] = useState<any>([]);
+  const [tasks, setTasks] = useState<TaskModel[]>([]);
+  const [finishedTasks, setFinishedTasks] = useState<TaskModel[]>([]);
   const [taskStart, setTaskStart] = useState(new Date());
   const [isAddingTask, setIsAddingTask] = useState(false);
 

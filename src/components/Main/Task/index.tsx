@@ -1,22 +1,23 @@
-import { useCallback, useEffect, useState } from "react";
-import { useLocation                      } from "react-router";
-import { TaskModel                        } from "../../../models/task";
+import React, { useCallback, useEffect, useState } from "react";
+import { useLocation                             } from "react-router";
+import { TaskModel                               } from "../../../models/task";
 
 import EditTask from "./EditTask";
 
+
 interface TaskProps {
   finishedTasks: TaskModel[];
-  setFinishedTasks: (value: TaskModel[]) => void;
+  setFinishedTasks: React.Dispatch<React.SetStateAction<TaskModel[]>>;
   dataKey: number;
   task: TaskModel;
 }
 
-const Task = ({
+const Task: React.FC<TaskProps> = ({
   finishedTasks,
   setFinishedTasks,
   dataKey,
   task
-}: TaskProps) => {
+}) => {
   const [ tasks, setTasks ] = useState<TaskModel[]>([]);
 
   const { pathname } = useLocation();
@@ -27,18 +28,19 @@ const Task = ({
   }, []);
   
   const deleteTask = () => {
-    if (window.confirm("Are you sure to delete?"))
-      TaskModel.delete(task.id!).then(() => {
+    if (window.confirm("Are you sure to delete?")) {
+      TaskModel.delete(task.id).then(() => {
         setTasks(tasks?.filter(({ id }: TaskModel) => id !== task.id));
 
         setFinishedTasks(finishedTasks?.filter(({ id }: TaskModel) => id !== task.id));
       });
+    }
   };
 
   const editTask = () => setIsEditingTask(true);
 
   const startTask = () =>
-    TaskModel.start(task.id!).then(() => {
+    TaskModel.start(task.id).then(() => {
       setTasks(
         tasks?.map(({ id }: TaskModel) => (
           task.id == id ? { ...task, isWorking: true } : task
@@ -52,7 +54,7 @@ const Task = ({
 
   const finishTask = useCallback(async () => {
     try {
-      await TaskModel.finish(task.id!);
+      await TaskModel.finish(task.id);
 
       setTasks(tasks?.filter(({ id }: TaskModel) => task.id != id));
 
@@ -88,7 +90,7 @@ const Task = ({
                 >
                   {task.isWorking ? "Working..." : "Deadline"}
                 </span>
-                {task.deadline}
+                {new Date(task.deadline).format("yyyy-mm-dd hh:ii")}
               </p>
               <p className="text-gray-600 font-light text-md h-28 overflow-y-scroll whitespace-pre-line">
                 {task.description}
@@ -132,7 +134,6 @@ const Task = ({
         <EditTask
           setIsEditingTask={setIsEditingTask}
           setTasks={setTasks}
-          tasks={tasks}
           task={task}
         />
       )}

@@ -1,15 +1,12 @@
-import { FunctionComponent, useEffect, useState } from "react";
-import { Link                                   } from "react-router-dom";
-import { EmployeeModel                          } from "../models/employee";
-import { handleFetchError                       } from "../utils/handleFetchError";
+import React, { useEffect, useState } from "react";
+import { Link                       } from "react-router-dom";
+import { EmployeeModel              } from "../models/employee";
 
-const Friends: FunctionComponent = () => {
+const Friends: React.FC = () => {
   const [friends, setFriends] = useState<EmployeeModel[]>([]);
   
   useEffect(() => {
-    EmployeeModel.getAll()
-      .then(setFriends)
-      .catch(handleFetchError);
+    EmployeeModel.getAll().then(setFriends)
   }, []);
 
   return (

@@ -1,12 +1,11 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 const PostponeTask = ({
   setIsPostponingTask,
   title,
-  setTasks,
   description,
-}: any) => {
+}: any): React.ReactElement => {
   const [body, setBody] = useState({
     title,
     description,
@@ -15,7 +14,6 @@ const PostponeTask = ({
   });
 
   const [progress, setProgress] = useState("50");
-  const redirect = useNavigate();
 
   const inputChange = ({
     target,
@@ -32,7 +30,7 @@ const PostponeTask = ({
     [progress]
   );
 
-  const postponeTask = (event: any) => {
+  const postponeTask = (event: React.FormEvent) => {
     event.preventDefault();
     // authFetch
     //   .post("/reports/task", body)

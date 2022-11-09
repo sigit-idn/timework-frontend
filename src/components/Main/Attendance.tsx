@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate                      } from "react-router";
-import { AttendanceModel                  } from "../../models/attendance";
+import React, { useCallback, useEffect, useState } from "react";
+import { AttendanceModel                         } from "../../models/attendance";
+
 
 type Title      = "Work Start" | "Work End" | "Break Start" | "Break End";
 type CamelTitle = "workStart"  | "workEnd"  | "breakStart"  | "breakEnd";
@@ -11,18 +11,17 @@ interface AttendanceProps {
   dataKey: 1 | 2 | 3 | 4;
   attendance: AttendanceModel;
   cta: 1 | 2 | 3 | 4;
-  setCta: (cta: 1 | 2 | 3 | 4) => void;
+  setCta: React.Dispatch<React.SetStateAction<1 | 2 | 3 | 4>>;
 }
 
-const Attendance = ({
+const Attendance: React.FC<AttendanceProps> = ({
   title,
   setCta,
   subtitle,
   dataKey,
   attendance,
   cta,
-}: AttendanceProps) => {
-  const redirect = useNavigate();
+}) => {
   const [isClicked, setIsClicked] = useState(false);
   
   useEffect(() => {
@@ -35,18 +34,20 @@ const Attendance = ({
   }, [attendance, title]);
 
   useEffect(() => {
-    if (cta === dataKey && isClicked) setCta(dataKey + 1 as 1 | 2 | 3 | 4);
+    if (cta === dataKey && isClicked) {
+      setCta(dataKey + 1 as 1 | 2 | 3 | 4);
+    }
   }, [cta, isClicked, dataKey, setCta]);
   
 
   const attend = useCallback(() => {
     AttendanceModel
       .attend(title.snakeize())
-      .then((res: any) => {
+      .then(() => {
 
       setIsClicked(true);
       if (title === "Work Start")
-        localStorage.setItem("task_start", new Date().toLocaleString());
+        localStorage.setItem("task_start", new Date().format("yyyy-MM-dd hh:ii:ss"));
     });
   }, []);
 
@@ -67,7 +68,10 @@ const Attendance = ({
               cta === dataKey ? 100 : 700
             }`}
           >
-            {!isClicked ? title : new Date(attendance[title.camelize<CamelTitle>()]!).format("hh:mm:ss")}
+            { !isClicked 
+              ? title 
+              : new Date(attendance[title.camelize<CamelTitle>()] ?? "").format("hh:mm:ss")
+            }
           </h4>
           <div className="text-gray-400">{!isClicked ? subtitle : title}</div>
         </div>

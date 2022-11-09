@@ -1,9 +1,11 @@
-import { createContext } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 import { TaskModel     } from "../models/task";
 
-const WorkingTaskContext = createContext({
-	workingTask: {} as TaskModel|undefined,
-	setWorkingTask: (task?: TaskModel) => {},
-})
+interface WorkingTaskContext {
+	workingTask?: TaskModel;
+	setWorkingTask?: Dispatch<SetStateAction<TaskModel | undefined>>;
+}
+
+const WorkingTaskContext = createContext<WorkingTaskContext>({});
 
 export { WorkingTaskContext }

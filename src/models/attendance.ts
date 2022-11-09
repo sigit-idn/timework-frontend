@@ -1,8 +1,8 @@
-import { resourcePath } from "../decorators/resourcePath"
 import { BaseModel    } from "./base"
 
-@resourcePath('attendances')
 export class AttendanceModel extends BaseModel {
+	static resourcePath = 'attendances'
+	
 	constructor(
 		public employeeId : string,
 		public date       : string,
@@ -21,6 +21,22 @@ export class AttendanceModel extends BaseModel {
 		})
 
 		return await res.json()
+	}
+
+	get totalWorkSeconds(): number {
+		if (!this.workEnd || !this.breakStart || !this.breakEnd) return 0
+
+		const workStart  = new Date(this.workStart)
+		const breakStart = new Date(this.breakStart)
+		const breakEnd   = new Date(this.breakEnd)
+		const workEnd    = new Date(this.workEnd)
+
+		const workSeconds = (
+			( workEnd.getTime() - workStart.getTime() ) -
+			( breakEnd.getTime() - breakStart.getTime() )
+		) / 1000
+
+		return workSeconds
 	}
 }
 	

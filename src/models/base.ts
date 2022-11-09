@@ -1,6 +1,7 @@
+import { handleFetchResponse } from "../utils/handleFetchResponse"
+
 export abstract class BaseModel {
-	protected static readonly baseUrl: string = process.env.REACT_APP_API_URL!
-	public static resourcePath: string = ""
+	protected static readonly baseUrl: string = process.env.REACT_APP_API_URL ?? "http://localhost:3000"
 	protected static readonly options: RequestInit = {
 		credentials: "include",
 		headers: {
@@ -9,7 +10,7 @@ export abstract class BaseModel {
 	}
 
 	constructor(
-		public id?: string
+		public id: string = "",
 	) { }
 	
 	static async getAll<T extends BaseModel>(
@@ -19,7 +20,8 @@ export abstract class BaseModel {
 			...BaseModel.options,
 			method: "GET",
 		})
-		return await res.json()
+
+		return handleFetchResponse<T[]>(res)
 	}
 
 	static async get<T extends BaseModel>(
@@ -30,7 +32,8 @@ export abstract class BaseModel {
 			...BaseModel.options,
 			method: "GET",
 		})
-		return await res.json()
+
+		return handleFetchResponse<T>(res)
 	}
 
 	static async getWhere<T extends BaseModel>(
@@ -41,7 +44,8 @@ export abstract class BaseModel {
 			...BaseModel.options,
 			method: "GET",
 		})
-		return await res.json()
+		
+		return handleFetchResponse<T[]>(res)
 	}
 
 	static async create<T extends BaseModel>(
@@ -53,7 +57,8 @@ export abstract class BaseModel {
 			method: "POST",
 			body: JSON.stringify(body)
 		})
-		return await res.json()
+		
+		return handleFetchResponse<T>(res)
 	}
 
 	static async update<T extends BaseModel>(
@@ -66,7 +71,8 @@ export abstract class BaseModel {
 			method: "PUT",
 			body: JSON.stringify(body)
 		})
-		return await res.json()
+		
+		return handleFetchResponse<T>(res)
 	}
 
 	static async delete<T extends BaseModel>(
@@ -77,6 +83,7 @@ export abstract class BaseModel {
 			...BaseModel.options,
 			method: "DELETE",
 		})
-		return await res.json()
+		
+		return handleFetchResponse<T>(res)
 	}
 }

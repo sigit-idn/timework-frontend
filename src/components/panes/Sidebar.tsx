@@ -6,11 +6,20 @@ import {
   Clock,
   UserPlus,
 } from "@geist-ui/react-icons";
+import React from "react";
 
 import { useNavigate } from "react-router-dom";
 import SideLink from "./SideLink";
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }: any) => {
+interface SidebarProps {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({
+  isSidebarOpen,
+  setIsSidebarOpen,
+}) => {
   const redirect = useNavigate();
 
   const logout = () => {
@@ -23,15 +32,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: any) => {
   return (
     <>
       <div
-        onClick={() => setSidebarOpen(false)}
+        onClick={() => setIsSidebarOpen(false)}
         className={`fixed z-20 inset-0 bg-black opacity-50 transition-opacity lg:hidden ${
-          sidebarOpen ? "block" : "hidden"
+          isSidebarOpen ? "block" : "hidden"
         }`}
       ></div>
 
       <div
         className={`fixed z-30 ease-out inset-y-0 left-0 w-64 transition duration-300 transform bg-gray-900 overflow-y-auto lg:translate-x-0 lg:static lg:inset-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="flex items-center justify-center mt-8">

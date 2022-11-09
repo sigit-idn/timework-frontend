@@ -1,16 +1,17 @@
-import { ArrowLeft                } from "@geist-ui/react-icons";
-import { useEffect, useState      } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ReportModel              } from "../models/report";
+import { ArrowLeft                  } from "@geist-ui/react-icons";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate   } from "react-router-dom";
+import { ReportModel                } from "../models/report";
 
 import Report from "../components/Reports/Report";
 
-const Reports = () => {
+
+const Reports: React.FC = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [userId, setUserId] = useState("");
-  const [reports, setReports] = useState<ReportModel[]>([]);
-  const [month, setMonth] = useState(new Date().format("YYYY-MM"));
+  const [ userId, setUserId ] = useState("");
+  const [ reports, setReports ] = useState<ReportModel[]>([]);
+  const [ month, setMonth ] = useState(new Date().format("YYYY-MM"));
 
   useEffect(() => {
     ReportModel.getWhere({ employeeId: userId, month }).then(setReports);
@@ -28,7 +29,7 @@ const Reports = () => {
           </button>
           <h1 className="text-xl ml-3 font-semibold">
             {state}
-            <span className="font-light">'s Reports</span>
+            <span className="font-light">&aposs Reports</span>
           </h1>
         </div>
       ) }

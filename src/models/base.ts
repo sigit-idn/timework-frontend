@@ -1,10 +1,13 @@
 import { handleFetchResponse } from "../utils/handleFetchResponse"
 
 
+interface ChildStatic<T extends BaseModel> {
+	resourcePath: string;
+	fromJson(json: Record<string, any>): T;
+}
+
 export abstract class BaseModel {
 	protected static readonly baseUrl: string = process.env.REACT_APP_API_URL ?? "http://localhost:3000"
-	protected static resourcePath: string;
-	protected static fromJson: (json: Record<string, any>) => Record<string, any>
 	protected static readonly options: RequestInit = {
 		credentials: "include",
 		headers: {
@@ -38,58 +41,58 @@ export abstract class BaseModel {
 	}
 	
 	static async getAll<T extends BaseModel>(
-		this: new (...args: any[]) => T
+		this: { new (...args: any[]): T } & ChildStatic<T>
 	): Promise<T[]> {
-		const data = await BaseModel._fetch("GET", (this as any).resourcePath)
+		const data = await BaseModel._fetch("GET", this.resourcePath)
 		
-		const items = data.map((item: Record<string, any>) => (this as any).fromJson(item))
+		const items = data.map((item: Record<string, any>) => this.fromJson(item))
 		
 		return items
 	}
 
 	static async get<T extends BaseModel>(
-		this: new (...args: any[]) => T, 
+		this: { new (...args: any[]): T } & ChildStatic<T>,
 		id: string
 	): Promise<T> {
-		const data = await BaseModel._fetch("GET", `${(this as any).resourcePath}/${id}`)
+		const data = await BaseModel._fetch("GET", `${this.resourcePath}/${id}`)
 
-		return (this as any).fromJson(data)
+		return this.fromJson(data)
 	}
 
 	static async getWhere<T extends BaseModel>(
-		this: new (...args: any[]) => T, 
+		this: { new (...args: any[]): T } & ChildStatic<T>,
 		{ ...params }: Record<string, any>
 	): Promise<T[]> {
-		const data = await BaseModel._fetch("GET", (this as any).resourcePath, params)
+		const data = await BaseModel._fetch("GET", this.resourcePath, params)
 
-		return data.map((item: Record<string, any>) => (this as any).fromJson(item))
+		return data.map((item: Record<string, any>) => this.fromJson(item))
 	}
 
 	static async create<T extends BaseModel>(
-		this: new (...args: any[]) => T,
+		this: { new (...args: any[]): T } & ChildStatic<T>,
 		body: Record<string, any>
 	): Promise<T> {
-		const data = await BaseModel._fetch("POST", (this as any).resourcePath, undefined, body)
+		const data = await BaseModel._fetch("POST", this.resourcePath, undefined, body)
 
-		return (this as any).fromJson(data)
+		return this.fromJson(data)
 	}
 
 	static async update<T extends BaseModel>(
-		this: new (...args: any[]) => T,
+		this: { new (...args: any[]): T } & ChildStatic<T>,
 		id: string,
 		body: Record<string, any>
 	): Promise<T> {
-		const data = await BaseModel._fetch("PUT", `${(this as any).resourcePath}/${id}`, undefined, body)
+		const data = await BaseModel._fetch("PUT", `${this.resourcePath}/${id}`, undefined, body)
 
-		return (this as any).fromJson(data)
+		return this.fromJson(data)
 	}
 
 	static async delete<T extends BaseModel>(
-		this: new (...args: any[]) => T,
+		this: { new (...args: any[]): T } & ChildStatic<T>,
 		id: string
 	): Promise<T> {
-		const data = await BaseModel._fetch("DELETE", `${(this as any).resourcePath}/${id}`)
+		const data = await BaseModel._fetch("DELETE", `${this.resourcePath}/${id}`)
 
-		return (this as any).fromJson(data)
+		return this.fromJson(data)
 	}
 }

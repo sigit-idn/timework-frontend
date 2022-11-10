@@ -3,7 +3,7 @@ interface LoginInput {
 	password: string;
 }
 
-export const login = ({ email, password }: LoginInput): Promise<any> => {
+export const login = ({ email, password }: LoginInput): Promise<void> => {
 	return fetch(process.env.REACT_APP_API_URL + "/auth/login", {
 		method: "POST",
 		credentials: "include",

@@ -4,7 +4,7 @@ import { WorkingTaskContext           } from "./config/contexts";
 import { TaskModel                    } from "./models/task";
 import { Role                         } from "./enums/role";
 
-import MainLayout   from "./layouts/MainLayout";
+import MainLayout   from "./components/layouts/MainLayout";
 import Login        from "./pages/Login";
 import Friends      from "./pages/Friends";
 import Reports      from "./pages/Reports";

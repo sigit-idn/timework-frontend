@@ -4,8 +4,8 @@ import { useNavigate, useParams     } from "react-router";
 import { useLocation                } from "react-router-dom";
 import { TaskModel                  } from "../models/task";
 
-import Task    from "../components/Main/Task";
-import AddTask from "../components/Main/Task/AddTask";
+import Task    from "../components/cards/Task";
+import AddTask from "../components/modals/AddTask";
 
 const EmployeeTask: React.FC = () => {
   const { employeeId } = useParams();

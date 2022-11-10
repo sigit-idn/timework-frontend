@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useLocation     } from "react-router-dom";
 
-import Header  from "../components/panes/Header";
-import Sidebar from "../components/panes/Sidebar";
+import Header  from "../panes/Header";
+import Sidebar from "../panes/Sidebar";
 
 
 const MainLayout: React.FC = ({ children }) => {

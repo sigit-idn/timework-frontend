@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation                             } from "react-router";
-import { TaskModel                               } from "../../../models/task";
+import { TaskModel                               } from "../../models/task";
 
-import EditTask from "./EditTask";
+import EditTask from "../modals/EditTask";
 
 
 interface TaskProps {

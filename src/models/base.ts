@@ -2,6 +2,7 @@ import { handleFetchResponse } from "../utils/handleFetchResponse"
 
 
 interface ChildStatic<T extends BaseModel> {
+	new (...args: any[]): T;
 	resourcePath: string;
 	fromJson(json: Record<string, any>): T;
 }
@@ -41,17 +42,15 @@ export abstract class BaseModel {
 	}
 	
 	static async getAll<T extends BaseModel>(
-		this: { new (...args: any[]): T } & ChildStatic<T>
+		this: ChildStatic<T>
 	): Promise<T[]> {
 		const data = await BaseModel._fetch("GET", this.resourcePath)
 		
-		const items = data.map((item: Record<string, any>) => this.fromJson(item))
-		
-		return items
+		return data.map((item: Record<string, any>) => this.fromJson(item))
 	}
 
 	static async get<T extends BaseModel>(
-		this: { new (...args: any[]): T } & ChildStatic<T>,
+		this: ChildStatic<T>,
 		id: string
 	): Promise<T> {
 		const data = await BaseModel._fetch("GET", `${this.resourcePath}/${id}`)
@@ -60,7 +59,7 @@ export abstract class BaseModel {
 	}
 
 	static async getWhere<T extends BaseModel>(
-		this: { new (...args: any[]): T } & ChildStatic<T>,
+		this: ChildStatic<T>,
 		{ ...params }: Record<string, any>
 	): Promise<T[]> {
 		const data = await BaseModel._fetch("GET", this.resourcePath, params)
@@ -69,7 +68,7 @@ export abstract class BaseModel {
 	}
 
 	static async create<T extends BaseModel>(
-		this: { new (...args: any[]): T } & ChildStatic<T>,
+		this: ChildStatic<T>,
 		body: Record<string, any>
 	): Promise<T> {
 		const data = await BaseModel._fetch("POST", this.resourcePath, undefined, body)
@@ -78,7 +77,7 @@ export abstract class BaseModel {
 	}
 
 	static async update<T extends BaseModel>(
-		this: { new (...args: any[]): T } & ChildStatic<T>,
+		this: ChildStatic<T>,
 		id: string,
 		body: Record<string, any>
 	): Promise<T> {
@@ -88,7 +87,7 @@ export abstract class BaseModel {
 	}
 
 	static async delete<T extends BaseModel>(
-		this: { new (...args: any[]): T } & ChildStatic<T>,
+		this: ChildStatic<T>,
 		id: string
 	): Promise<T> {
 		const data = await BaseModel._fetch("DELETE", `${this.resourcePath}/${id}`)

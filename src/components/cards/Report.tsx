@@ -3,7 +3,7 @@ import { ChevronDown     } from "@geist-ui/react-icons";
 import { ReportModel     } from "../../models/report";
 import { TaskModel       } from "../../models/task";
 
-import Task from "./Task";
+import Task from "../list-items/ReportTask";
 
 
 interface ReportProps {

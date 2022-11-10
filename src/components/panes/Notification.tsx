@@ -60,7 +60,7 @@ const Notification:React.FC = () => {
           <div key={i} className="bg-white bg-opacity-90 border border-white rounded p-2 backdrop-blur-lg mb-2 shadow">
             <h3 className="font-bold text-sm">{notification?.from}</h3>
             <div className="text-xs text-indigo-500 font-bold">
-              {notification?.deadline?.format("hh:mm:ss")}
+              {notification?.deadline?.format("hh:ii:ss")}
             </div>
             <p>{notification?.title}</p>
           </div>

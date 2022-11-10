@@ -4,16 +4,17 @@ import { WorkingTaskContext           } from "./config/contexts";
 import { TaskModel                    } from "./models/task";
 import { Role                         } from "./enums/role";
 
-import MainLayout   from "./components/layouts/MainLayout";
-import Login        from "./pages/Login";
-import Friends      from "./pages/Friends";
-import Reports      from "./pages/Reports";
-import Attendance   from "./pages/Attendance";
-import AddEmployee  from "./pages/AddEmployee";
-import EmployeeTask from "./pages/EmployeeTasks";
-import Dashboard    from "./pages/Dashboard";
-import NotFound     from "./pages/NotFound";
-import Guard        from "./router/Guard";
+import MainLayout         from "./components/layouts/MainLayout";
+import Login              from "./pages/Login";
+import Friends            from "./pages/Friends";
+import Reports            from "./pages/Reports";
+import Attendance         from "./pages/Attendance";
+import AddEmployee        from "./pages/AddEmployee";
+import EmployeeTask       from "./pages/EmployeeTasks";
+import Dashboard          from "./pages/Dashboard";
+import NotFound           from "./pages/NotFound";
+import Guard              from "./router/Guard";
+import EmployeeAttendance from "./pages/EmployeeAttendance";
 
 const App: React.FC = () => {
   const [workingTask, setWorkingTask] = useState<TaskModel>();
@@ -35,7 +36,7 @@ const App: React.FC = () => {
             <Route path="/friends/:employeeId/*">
               <Route path="tasks"       element={<Guard role={Role.EMPLOYEE}><EmployeeTask /></Guard>} />
               <Route path="reports"     element={<Guard role={Role.EMPLOYEE}><Reports /></Guard>     } />
-              <Route path="attendances" element={<Guard role={Role.EMPLOYEE}><Attendance /></Guard>  } />
+              <Route path="attendances" element={<Guard role={Role.EMPLOYEE}><EmployeeAttendance /></Guard>} />
             </Route>
 
             <Route path="friends/:employeeId/edit" element={<Guard role={Role.ADMIN}><AddEmployee /></Guard>} />

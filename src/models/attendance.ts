@@ -1,4 +1,5 @@
-import { BaseModel    } from "./base"
+import { BaseModel } from "./base"
+import { Duration  } from "./durations"
 
 export class AttendanceModel extends BaseModel {
 	static resourcePath = 'attendances'
@@ -35,17 +36,21 @@ export class AttendanceModel extends BaseModel {
 		return this.fromJson(data)
 	}
 
-	get totalWorkSeconds(): number {
-		if (!this.workEnd || !this.breakStart || !this.breakEnd) return 0
+	get totalWorkTime(): Duration {
+		if (!this.workEnd || !this.breakStart || !this.breakEnd) {
+			return new Duration(0)
+		}
 
-		const workSeconds = (
+		const workMiliseconds = (
 			( this.workEnd.getTime() - this.workStart.getTime() ) -
 			( this.breakEnd.getTime() - this.breakStart.getTime() )
-		) / 1000
+		)
 
-		console.log({ workSeconds, workEnd: this.workEnd, workStart: this.workStart, breakEnd: this.breakEnd, breakStart: this.breakStart })
+		if (workMiliseconds < 0) {
+			return new Duration(0)
+		}
 
-		return workSeconds
+		return new Duration(workMiliseconds)
 	}
 }
 	

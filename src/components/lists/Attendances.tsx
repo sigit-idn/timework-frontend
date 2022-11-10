@@ -1,66 +1,108 @@
-import React, { useEffect, useState   } from 'react';
-import { Attendance as AttendanceEnum } from '../../enums/attendance';
-import { AttendanceModel              } from '../../models/attendance';
+import { ArrowLeft                               } from "@geist-ui/react-icons";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useNavigate                             } from "react-router-dom";
+import { AttendanceModel                         } from "../../models/attendance";
 
-import Attendance from '../list-items/Attendance';
+import Attendance from "../list-items/Attendance";
 
-const Attendances: React.FC = () => {
-	const [cta, setCta]               = useState<AttendanceEnum>(AttendanceEnum.workStart);
-  const [clock, setClock]           = useState<string>(new Date().format("hh:ii:ss"));
-  const [attendance, setAttendance] = useState<AttendanceModel>({} as AttendanceModel);
-	
+interface AttendanceProps {
+  employeeId?: string;
+  state?: {
+    name: string;
+  };
+}
+
+const Attendances: React.FC<AttendanceProps> = ({ employeeId, state }) => {
+  const navigate = useNavigate();
+  const [ attendances, setAttendances ] = useState<AttendanceModel[]>([]);
+  const [ month, setMonth ] = useState(new Date().format("yyyy-mm"));
 
   useEffect(() => {
-		AttendanceModel.getWhere({ date: new Date().format("yyyy-MM-dd") })
-    .then(([data]: AttendanceModel[]) => {
-			setAttendance(data);
+    const where: Record<string, string> = { month };
 
-			if (!data) {
-				return setCta(AttendanceEnum.workStart);
-			} 
+    if (employeeId) {
+      where.employeeId = employeeId;
+    }
 
-			for (const [key, value] of Object.entries(data)) {
-				if (!(key in AttendanceEnum)) {
-					continue;
-				}
+    AttendanceModel.getWhere(where).then(setAttendances);
+  }, [month]);
 
-				if (value) {
-					continue;
-				}
+  return (
+    <>
+      <div className="flex flex-col mt-2">
+        {employeeId && (
+          <div className="flex items-center mb-5">
+            <button
+              className="rounded-full shadow hover:shadow-md bg-white p-1"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft />
+            </button>
+            <h1 className="text-xl ml-3 font-semibold">
+              {state?.name}
+              <span className="font-light">&apos;s Attendances</span>
+            </h1>
+          </div>
+        )}
 
-				return setCta(AttendanceEnum[key as keyof typeof AttendanceEnum]);
-			}
+        <label
+          htmlFor="dateInput"
+          className="px-3 border-b border-gray-300 bg-gray-50 text-left leading-4 font-medium text-gray-800 rounded-lg tracking-wider"
+        >
+          <input
+            id="dateInput"
+            onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
+              setMonth(target.value.replace(/(\d{4})[/-](\d{2}).*/, "$1-$2"));
+            }}
+            className="border-0 bg-transparent text-sm"
+            type="month"
+            defaultValue={ new Date().format("yyyy-mm") }
+          />
+        </label>
+      </div>
+      <div className="flex flex-col mt-8">
+        <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div className="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+            <table className="min-w-full">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    Work Start
+                  </th>
+                  <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    Break Start
+                  </th>
+                  <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    Break End
+                  </th>
+                  <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    Work End
+                  </th>
+                  <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    Work Time
+                  </th>
+                </tr>
+              </thead>
 
-			setCta(AttendanceEnum.workEnd);
-    });
-    
-		const tickInterval = setInterval(() => {
-			setClock(new Date().format("hh:ii:ss"));
-		}, 1000);
-
-    return () => clearInterval(tickInterval);
-  }, []);
-	
-	return (
-		<div className="mt-1">
-			<div className="flex flex-wrap -mx-2">
-				{ ["Work Start", "Break Start", "Break End", "Work End"].map(
-						(title: any, index: any) => (
-							<Attendance
-								key={index}
-								title={title}
-								subtitle={clock}
-								attendance={attendance}
-								setAttendance={setAttendance}
-								setCta={setCta}
-								cta={cta}
-								dataKey={index + 1}
-							/>
-						)
-					) }
-			</div>
-		</div>
-	);
+              <tbody className="bg-white">
+                {attendances.map(
+                  (attendance: AttendanceModel) => (
+                      <Attendance
+                        key={attendance.id}
+                        attendance={attendance}
+                      />
+                    )
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Attendances;

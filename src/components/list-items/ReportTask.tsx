@@ -49,7 +49,7 @@ const Task: React.FC<TaskProps> = ({
                   onChange={changeHandler}
                   className="text-sm bg-gray-50 px-1 py-2 rounded ring-1 outline-none border-0 focus:ring-indigo-500 ring-gray-200"
                   type="time"
-                  defaultValue={new Date(task.taskStart ?? "").format("HH:mm")}
+                  defaultValue={new Date(task.taskStart ?? "").format("hh:ii")}
                 />
                 〜
                 <input
@@ -57,7 +57,7 @@ const Task: React.FC<TaskProps> = ({
                   onChange={changeHandler}
                   className="text-sm bg-gray-50 px-1 py-2 rounded ring-1 outline-none border-0 focus:ring-indigo-500 ring-gray-200"
                   type="time"
-                  defaultValue={new Date(task.taskEnd ?? "").format("HH:mm")}
+                  defaultValue={new Date(task.taskEnd ?? "").format("hh:ii")}
                 />
               </div>
               <input
@@ -76,8 +76,8 @@ const Task: React.FC<TaskProps> = ({
           ) : (
             <>
               <div className="text-sm leading-5 mb-2 text-indigo-500">
-                {new Date(task.taskStart ?? "").format("HH:mm")} 〜{" "}
-                {new Date(task.taskEnd ?? "").format("HH:mm")}
+                {new Date(task.taskStart ?? "").format("hh:ii")} 〜{" "}
+                {new Date(task.taskEnd ?? "").format("hh:ii")}
               </div>
               <h3 className="text-sm leading-5 mb-2 font-medium text-gray-900">
                 {task.title}

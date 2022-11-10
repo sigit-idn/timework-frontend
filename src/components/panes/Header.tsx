@@ -21,7 +21,7 @@ const Header: React.FC<Props> = ({ setSidebarOpen }) => {
     <header className="flex justify-between items-center py-4 px-6 bg-white border-b-4">
       <div className="flex items-center w-11/12 lg:w-full">
         <div className="relative mx-0 text-lg md:text-2xl font-light bg-yellow-300 rounded-full px-3 py-1 w-24 md:w-32 text-center">
-          { clock?.format("hh:mm:ss") }
+          { clock?.format("hh:ii:ss") }
         </div>
         <div className="text-indigo-600 text-lg truncate px-2 flex-1">
           { workingTask ? workingTask.title : "No Working Task" }

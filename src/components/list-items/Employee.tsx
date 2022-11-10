@@ -19,21 +19,21 @@ const Employee: React.FC<EmployeeProps> = ({ id, name, position, tasks, isAdmin 
 								<>
 									<Link
 										to={`/friends/${id}/edit`}
-										state={name}
+										state={{ name }}
 										className="py-1 px-2 bg-yellow-500 text-white rounded text-xs transition hover:bg-yellow-600 opacity-100 block md:opacity-0 group-hover:opacity-100"
 									>
 										Edit
 									</Link>
 									<Link
 										to={`/friends/${id}/attendances`}
-										state={name}
+										state={{ name }}
 										className="py-1 px-2 bg-green-500 text-white border block text-xs border-green-500 rounded md:hidden"
 									>
 										Attendance
 									</Link>
 									<Link
 										to={`/friends/${id}/reports`}
-										state={name}
+										state={{ name }}
 										className="py-1 px-2 bg-blue-500 text-white border block text-xs border-blue-500 rounded md:hidden"
 									>
 										Reports
@@ -64,7 +64,7 @@ const Employee: React.FC<EmployeeProps> = ({ id, name, position, tasks, isAdmin 
 				</span>
 				<Link
 					to={"/friends/tasks/" + id}
-					state={name}
+					state={{ name }}
 					className="py-1 px-2 bg-indigo-500 text-white border border-indigo-500 rounded-r h-full"
 				>
 					View
@@ -79,7 +79,7 @@ const Employee: React.FC<EmployeeProps> = ({ id, name, position, tasks, isAdmin 
 				</span>
 				<Link
 					to={`/friends/${id}/tasks`}
-					state={name}
+					state={{ name }}
 					className="py-1 px-2 bg-indigo-500 text-white border border-indigo-500 rounded-r h-full"
 				>
 					View <span className="md:hidden">Tasks</span>
@@ -91,14 +91,14 @@ const Employee: React.FC<EmployeeProps> = ({ id, name, position, tasks, isAdmin 
 				<div className="text-center hidden md:flex">
 					<Link
 						to={`/friends/${id}/attendances`}
-						state={name}
+						state={{ name }}
 						className="py-1 px-2 bg-green-500 text-white border border-green-500 rounded-l"
 					>
 						Attendance
 					</Link>
 					<Link
 						to={`/friends/${id}/reports`}
-						state={name}
+						state={{ name }}
 						className="py-1 px-2 bg-blue-500 text-white border border-blue-500 rounded-r"
 					>
 						Reports

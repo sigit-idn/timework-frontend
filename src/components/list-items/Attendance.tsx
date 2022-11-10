@@ -1,92 +1,56 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Attendance as AttendanceEnum            } from "../../enums/attendance";
-import { AttendanceModel                         } from "../../models/attendance";
+import React from 'react';
+import { AttendanceModel } from '../../models/attendance';
 
-
-type Title = "Work Start" | "Work End" | "Break Start" | "Break End";
-
-interface AttendanceProps {
-  title        : Title;
-  subtitle     : string;
-  dataKey      : AttendanceEnum;
-  attendance   : AttendanceModel;
-  setAttendance: React.Dispatch<React.SetStateAction<AttendanceModel>>;
-  cta          : AttendanceEnum;
-  setCta       : React.Dispatch<React.SetStateAction<AttendanceEnum>>;
-}
-
-const Attendance: React.FC<AttendanceProps> = ({
-  title,
-  subtitle,
-  dataKey,
-  attendance,
-  setAttendance,
-  cta,
-  setCta,
+const Attendance: React.FC<{ attendance: AttendanceModel }> = ({ 
+	attendance: { date, workStart, workEnd, breakStart, breakEnd, totalWorkTime }
 }) => {
-  const [isClicked, setIsClicked] = useState(false);
-  const [key]                     = useState(title.camelize<keyof typeof AttendanceEnum>());
-  
-  useEffect(() => {
-      setIsClicked(Boolean(attendance && attendance[key]));
-  }, [attendance]);
+	return (
+		<tr>
+			<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
+				{date}
+			</td>
 
-  useEffect(() => {
-    if (cta === dataKey && isClicked) {
-      setCta(dataKey + 1);
-    }
-  }, [cta, isClicked]);
-  
-  
+			<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
+				{workStart ? (
+					workStart.format('hh:ii')
+				) : (
+					<span className="text-gray-500">Unset</span>
+				)}
+			</td>
 
-  const attend = useCallback(() => {
-    AttendanceModel
-      .attend(title.snakeize())
-      .then(() => {
+			<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
+				{breakStart ? (
+					breakStart.format('hh:ii')
+				) : (
+					<span className="text-gray-500">Unset</span>
+				)}
+			</td>
 
-        setAttendance((attendance) => {
-          attendance[key] = new Date();
-          return attendance;
-        });
-        
-        setIsClicked(true);
+			<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
+				{breakEnd ? (
+					breakEnd.format('hh:ii')
+				) : (
+					<span className="text-gray-500">Unset</span>
+				)}
+			</td>
 
-        console.log("after attend",
-          { key, title, attendance, isClicked, value2: attendance[key]});
+			<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
+				{workEnd ? (
+					workEnd.format('hh:ii')
+				) : (
+					<span className="text-gray-500">Unset</span>
+				)}
+			</td>
 
-        if (title === "Work Start") {
-          localStorage.setItem("taskStart", new Date().format("yyyy-MM-dd hh:ii:ss"));
-        }
-      });
-  }, []);
-
-  return (
-    <div onClick={attend} className="mt-3 px-2 w-1/2 cursor-pointer">
-      <div
-        className={`flex md:px-10 items-center py-6 shadow-sm rounded-md transition transform duration-500 ${
-          cta === dataKey
-            ? "bg-indigo-500 shadow-lg hover:shadow-2xl"
-            : isClicked
-              ? "bg-gray-300 shadow-inner"
-              : "bg-white hover:shadow-2xl"
-          }`
-        }>
-        <div className="mx-3">
-          <h4
-            className={`text-2xl font-semibold text-gray-${
-              cta === dataKey ? 100 : 700
-            }`}
-          >
-            { !isClicked 
-              ? title 
-              : attendance?.[key]?.format("hh:ii:ss")
-            }
-          </h4>
-          <div className="text-gray-400">{!isClicked ? subtitle : title}</div>
-        </div>
-      </div>
-    </div>
-  );
+			<td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-900">
+				{totalWorkTime ? (
+					totalWorkTime.format("hh:ii")
+				) : (
+					<span className="text-gray-500">Unset</span>
+				)}
+			</td>
+		</tr>
+	);
 };
 
 export default Attendance;

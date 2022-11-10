@@ -66,7 +66,7 @@ const EditTask: React.FC<EditTaskProps> = ({
               <label className="text-sm mb-3">Deadline</label>
               <input
                 name="deadline"
-                defaultValue={task.deadline.format("YYYY-MM-DDTHH:mm")}
+                defaultValue={task.deadline.format("yyyy-mm-ddThh:ii")}
                 type="datetime-local"
                 placeholder="Deadline"
                 onChange={inputChange}

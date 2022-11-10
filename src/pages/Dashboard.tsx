@@ -1,8 +1,8 @@
 import React  from "react";
 import Loader from "../components/others/Loader";
 
-const Tasks       = React.lazy(() => import("../components/lists/Tasks"));
-const Attendances = React.lazy(() => import("../components/lists/Attendances"));
+const Tasks             = React.lazy(() => import("../components/lists/Tasks"));
+const AttendanceButtons = React.lazy(() => import("../components/lists/AttendanceButtons"));
 
 
 const Dashboard: React.FC = () => {
@@ -13,11 +13,7 @@ const Dashboard: React.FC = () => {
       </h2>
 
       <React.Suspense fallback={<Loader />}>
-        <Attendances />
-      </React.Suspense>
-
-      <React.Suspense fallback={<Loader />}>
-        <h2 className="text-gray-700 text-3xl mt-7">Tasks</h2>
+        <AttendanceButtons />
         <Tasks />
       </React.Suspense>
     </>

@@ -9,7 +9,7 @@ import AddTask from "../components/modals/AddTask";
 
 const EmployeeTask: React.FC = () => {
   const { employeeId } = useParams();
-  const { state: name } = useLocation();
+  const { state: { name } } = useLocation();
   const navigate = useNavigate();
   
   const [tasks, setTasks] = useState<TaskModel[]>([]);
@@ -45,7 +45,6 @@ const EmployeeTask: React.FC = () => {
             ) => (
               <Task
                 key={i}
-                dataKey={i}
                 task={task}
                 setTasks={setTasks}
               />

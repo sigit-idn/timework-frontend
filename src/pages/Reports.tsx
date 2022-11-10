@@ -11,7 +11,7 @@ const Reports: React.FC = () => {
   const { state } = useLocation();
   const [ userId, setUserId ] = useState("");
   const [ reports, setReports ] = useState<ReportModel[]>([]);
-  const [ month, setMonth ] = useState(new Date().format("YYYY-MM"));
+  const [ month, setMonth ] = useState(new Date().format("yyyy-mm"));
 
   useEffect(() => {
     ReportModel.getWhere({ employeeId: userId, month }).then(setReports);
@@ -28,8 +28,8 @@ const Reports: React.FC = () => {
             <ArrowLeft />
           </button>
           <h1 className="text-xl ml-3 font-semibold">
-            {state}
-            <span className="font-light">&aposs Reports</span>
+            {state?.name}
+            <span className="font-light">&apos;s Reports</span>
           </h1>
         </div>
       ) }

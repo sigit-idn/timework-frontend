@@ -1,43 +1,42 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { Attendance as AttendanceEnum            } from "../../enums/attendance";
 import { AttendanceModel                         } from "../../models/attendance";
 
 
-type Title      = "Work Start" | "Work End" | "Break Start" | "Break End";
-type CamelTitle = "workStart"  | "workEnd"  | "breakStart"  | "breakEnd";
+type Title = "Work Start" | "Work End" | "Break Start" | "Break End";
 
 interface AttendanceProps {
-  title: Title;
-  subtitle: string;
-  dataKey: 1 | 2 | 3 | 4;
-  attendance: AttendanceModel;
-  cta: 1 | 2 | 3 | 4;
-  setCta: React.Dispatch<React.SetStateAction<1 | 2 | 3 | 4>>;
+  title        : Title;
+  subtitle     : string;
+  dataKey      : AttendanceEnum;
+  attendance   : AttendanceModel;
+  setAttendance: React.Dispatch<React.SetStateAction<AttendanceModel>>;
+  cta          : AttendanceEnum;
+  setCta       : React.Dispatch<React.SetStateAction<AttendanceEnum>>;
 }
 
 const Attendance: React.FC<AttendanceProps> = ({
   title,
-  setCta,
   subtitle,
   dataKey,
   attendance,
+  setAttendance,
   cta,
+  setCta,
 }) => {
   const [isClicked, setIsClicked] = useState(false);
+  const [key]                     = useState(title.camelize<keyof typeof AttendanceEnum>());
   
   useEffect(() => {
-    setIsClicked(
-      Boolean(
-        attendance 
-        && attendance[title.camelize<CamelTitle>()]
-        )
-      );
-  }, [attendance, title]);
+      setIsClicked(Boolean(attendance && attendance[key]));
+  }, [attendance]);
 
   useEffect(() => {
     if (cta === dataKey && isClicked) {
-      setCta(dataKey + 1 as 1 | 2 | 3 | 4);
+      setCta(dataKey + 1);
     }
-  }, [cta, isClicked, dataKey, setCta]);
+  }, [cta, isClicked]);
+  
   
 
   const attend = useCallback(() => {
@@ -45,10 +44,20 @@ const Attendance: React.FC<AttendanceProps> = ({
       .attend(title.snakeize())
       .then(() => {
 
-      setIsClicked(true);
-      if (title === "Work Start")
-        localStorage.setItem("task_start", new Date().format("yyyy-MM-dd hh:ii:ss"));
-    });
+        setAttendance((attendance) => {
+          attendance[key] = new Date();
+          return attendance;
+        });
+        
+        setIsClicked(true);
+
+        console.log("after attend",
+          { key, title, attendance, isClicked, value2: attendance[key]});
+
+        if (title === "Work Start") {
+          localStorage.setItem("taskStart", new Date().format("yyyy-MM-dd hh:ii:ss"));
+        }
+      });
   }, []);
 
   return (
@@ -60,8 +69,8 @@ const Attendance: React.FC<AttendanceProps> = ({
             : isClicked
               ? "bg-gray-300 shadow-inner"
               : "bg-white hover:shadow-2xl"
-        }`}
-      >
+          }`
+        }>
         <div className="mx-3">
           <h4
             className={`text-2xl font-semibold text-gray-${
@@ -70,7 +79,7 @@ const Attendance: React.FC<AttendanceProps> = ({
           >
             { !isClicked 
               ? title 
-              : new Date(attendance[title.camelize<CamelTitle>()] ?? "").format("hh:mm:ss")
+              : attendance?.[key]?.format("hh:ii:ss")
             }
           </h4>
           <div className="text-gray-400">{!isClicked ? subtitle : title}</div>

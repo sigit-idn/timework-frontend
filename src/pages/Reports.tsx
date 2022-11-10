@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate   } from "react-router-dom";
 import { ReportModel                } from "../models/report";
 
-import Report from "../components/cards/Report";
+import Report from "../components/list-items/Report";
 
 
 const Reports: React.FC = () => {

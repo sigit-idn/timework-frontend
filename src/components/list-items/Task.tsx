@@ -6,60 +6,51 @@ import EditTask from "../modals/EditTask";
 
 
 interface TaskProps {
-  finishedTasks: TaskModel[];
-  setFinishedTasks: React.Dispatch<React.SetStateAction<TaskModel[]>>;
-  dataKey: number;
-  task: TaskModel;
+  dataKey         : number;
+  task            : TaskModel;
+  setTasks        : React.Dispatch<React.SetStateAction<TaskModel[]>>;
 }
 
 const Task: React.FC<TaskProps> = ({
-  finishedTasks,
-  setFinishedTasks,
   dataKey,
-  task
+  task,
+  setTasks
 }) => {
-  const [ tasks, setTasks ] = useState<TaskModel[]>([]);
-
-  const { pathname } = useLocation();
   const [ isEditingTask, setIsEditingTask ] = useState(false);
 
-  useEffect(() => {
-    TaskModel.getAll().then((tasks: TaskModel[]) => setTasks(tasks));
-  }, []);
+  const { pathname } = useLocation();
+
   
   const deleteTask = () => {
     if (window.confirm("Are you sure to delete?")) {
       TaskModel.delete(task.id).then(() => {
-        setTasks(tasks?.filter(({ id }: TaskModel) => id !== task.id));
-
-        setFinishedTasks(finishedTasks?.filter(({ id }: TaskModel) => id !== task.id));
+        setTasks((tasks) => tasks.filter(({ id }) => id !== task.id));
       });
     }
   };
 
   const editTask = () => setIsEditingTask(true);
 
-  const startTask = () =>
+  const startTask = () => {
     TaskModel.start(task.id).then(() => {
-      setTasks(
-        tasks?.map(({ id }: TaskModel) => (
-          task.id == id ? { ...task, isWorking: true } : task
-        ) as TaskModel)
-      );
-    });
+      setTasks((tasks: TaskModel[]) => {
+        const newTasks = tasks?.map((t: TaskModel) => {
+          t.isWorking = t.id === task.id;
 
-  useEffect(() => {
-    finishedTasks && dataKey === 0 && startTask()
-  }, [finishedTasks]);
+          return t;
+        });
+
+        return newTasks;
+      });
+    });
+  };
+  
 
   const finishTask = useCallback(async () => {
     try {
       await TaskModel.finish(task.id);
 
-      setTasks(tasks?.filter(({ id }: TaskModel) => task.id != id));
-
-      localStorage.setItem("task_start", new Date().format("yyyy-mm-dd hh:ii:ss"));
-      setFinishedTasks([...finishedTasks, task]);
+      setTasks((tasks: TaskModel[]) => tasks.filter(({ id }: TaskModel) => id !== task.id));
     } catch (err) {
       console.error(err);
     }

@@ -4,21 +4,19 @@ import { useNavigate, useParams     } from "react-router";
 import { useLocation                } from "react-router-dom";
 import { TaskModel                  } from "../models/task";
 
-import Task    from "../components/cards/Task";
+import Task    from "../components/list-items/Task";
 import AddTask from "../components/modals/AddTask";
 
 const EmployeeTask: React.FC = () => {
   const { employeeId } = useParams();
   const { state: name } = useLocation();
-
   const navigate = useNavigate();
+  
   const [tasks, setTasks] = useState<TaskModel[]>([]);
-  const [finishedTasks, setFinishedTasks] = useState<TaskModel[]>([]);
-  const [taskStart, setTaskStart] = useState(new Date());
   const [isAddingTask, setIsAddingTask] = useState(false);
 
   useEffect(() => {
-    TaskModel.getWhere({ employeeId }).then(setTasks);
+    TaskModel.getWhere({ employeeId: String(employeeId), taskEnd: "" }).then(setTasks);
   }, []);
 
   return (
@@ -35,22 +33,21 @@ const EmployeeTask: React.FC = () => {
 
       <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-3 gap-3">
         {tasks
-          ?.sort((a: any, b: any) =>
-            new Date(a.deadline).getTime() > new Date(b.deadline).getTime()
+          ?.sort((a: TaskModel, b: TaskModel) => 
+            a.deadline.getTime() > b.deadline.getTime()
               ? 1
               : -1
           )
           .map(
             (
-              task: any,
+              task: TaskModel,
               i: number
             ) => (
               <Task
                 key={i}
                 dataKey={i}
                 task={task}
-                finishedTasks={finishedTasks}
-                setFinishedTasks={setFinishedTasks}
+                setTasks={setTasks}
               />
             )
           )}

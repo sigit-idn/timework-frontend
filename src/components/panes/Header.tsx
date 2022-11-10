@@ -1,15 +1,21 @@
-import React, { FunctionComponent, useContext, useState } from "react";
+import React, {  useContext, useEffect, useState } from "react";
 import { WorkingTaskContext                             } from "../../config/contexts";
 
 interface Props {
-  setSidebarOpen: (sidebarOpen: boolean) => void;
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Header: FunctionComponent<Props> = ({ setSidebarOpen }) => {
-  const [ clock, setClock ] = useState<Date|null>(null);
+const Header: React.FC<Props> = ({ setSidebarOpen }) => {
+  const [ clock, setClock ] = useState<Date>(new Date());
   const { workingTask } = useContext(WorkingTaskContext);
 
-  setInterval(() => setClock(new Date()), 1000);
+  useEffect(() => {
+    const tickInterval = setInterval(() => {
+      setClock(new Date());
+    }, 1000);
+
+    return () => clearInterval(tickInterval);
+  }, []);
 
   return (
     <header className="flex justify-between items-center py-4 px-6 bg-white border-b-4">

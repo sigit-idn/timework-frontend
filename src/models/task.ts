@@ -11,8 +11,8 @@ export class TaskModel extends BaseModel {
 		public isWorking  : boolean = false,
 		public deadline   : Date    = new Date(),
 		public description: string  = "",
-		public taskStart? : string,
-		public taskEnd?   : string,
+		public taskStart? : Date,
+		public taskEnd?   : Date
 	) {
 		super()
 	}
@@ -26,8 +26,8 @@ export class TaskModel extends BaseModel {
 			json.isWorking,
 			new Date(json.deadline),
 			json.description,
-			json.taskStart,
-			json.taskEnd
+			json.taskStart ? new Date(json.taskStart) : undefined,
+			json.taskEnd ? new Date(json.taskEnd) : undefined
 		)
 	}
 

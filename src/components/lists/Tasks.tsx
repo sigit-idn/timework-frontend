@@ -2,11 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { WorkingTaskContext                     } from "../../config/contexts";
 import { TaskModel                              } from "../../models/task";
 
-import Task    from "../cards/Task";
+import Task    from "../list-items/Task";
 import AddTask from "../modals/AddTask";
 
 const Tasks: React.FC = () => {
-	const [finishedTasks, setFinishedTasks] = useState<TaskModel[]>([]);
 	const [isAddingTask, setIsAddingTask]   = useState(false);
   const [tasks, setTasks]                 = useState<TaskModel[]>([]);
 	const [_taskStart, setTaskStart]        = useState(new Date());
@@ -20,11 +19,14 @@ const Tasks: React.FC = () => {
     if (!workingTask || !setWorkingTask) return;
     
     setWorkingTask(workingTask);
-    setTaskStart(new Date(workingTask.taskStart as string));
+
+		if (workingTask.taskStart) {
+			setTaskStart(workingTask.taskStart);
+		}
   }, [tasks]);
 
 	useEffect(() => {
-		TaskModel.getAll().then(setTasks);
+		TaskModel.getWhere({ taskEnd: "" }).then(setTasks);
 	}, []);
 	
 	return (
@@ -38,14 +40,14 @@ const Tasks: React.FC = () => {
 					<Task
 						key={i}
 						dataKey={i}
-						finishedTasks={finishedTasks}
-						setFinishedTasks={setFinishedTasks}
 						task={task}
+						setTasks={setTasks}
 					/>
 				)
 			)}
 
 		<button
+			type="button"
 			className="rounded py-16 text-center opacity-50 border-dashed border-2 border-gray-500"
 			onClick={() => setIsAddingTask(true)}
 		>

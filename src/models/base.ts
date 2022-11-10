@@ -4,7 +4,7 @@ import { handleFetchResponse } from "../utils/handleFetchResponse"
 interface ChildStatic<T extends BaseModel> {
 	new (...args: any[]): T;
 	resourcePath: string;
-	fromJson(json: Record<string, any>): T;
+	fromJson(json: Record<string, keyof T>): T;
 }
 
 export abstract class BaseModel {
@@ -23,7 +23,7 @@ export abstract class BaseModel {
 	protected static async _fetch(
 		method: "GET" | "POST" | "PUT" | "DELETE",
 		path: string,
-		params?: Record<string, any>,
+		params?: Record<string, string>,
 		body?: Record<string, any>
 	): Promise<Record<string, any>> {
 		const url = new URL(`${BaseModel.baseUrl}/${path}`)
@@ -60,7 +60,7 @@ export abstract class BaseModel {
 
 	static async getWhere<T extends BaseModel>(
 		this: ChildStatic<T>,
-		{ ...params }: Record<string, any>
+		params: Record<string, string>
 	): Promise<T[]> {
 		const data = await BaseModel._fetch("GET", this.resourcePath, params)
 

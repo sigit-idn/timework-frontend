@@ -14,7 +14,9 @@ const Dashboard: React.FC = () => {
 
       <React.Suspense fallback={<Loader />}>
         <Attendances />
-        
+      </React.Suspense>
+
+      <React.Suspense fallback={<Loader />}>
         <h2 className="text-gray-700 text-3xl mt-7">Tasks</h2>
         <Tasks />
       </React.Suspense>

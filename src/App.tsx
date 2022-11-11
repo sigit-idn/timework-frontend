@@ -14,6 +14,7 @@ import Home               from "./pages/Home";
 import NotFound           from "./pages/NotFound";
 import Guard              from "./router/Guard";
 import EmployeeReports    from "./pages/Friends/Reports";
+import EditEmployee       from "./pages/EditEmployee";
 
 const App: React.FC = () => {
 
@@ -36,8 +37,8 @@ const App: React.FC = () => {
             <Route path="attendances" element={<Guard role={Role.EMPLOYEE}><EmployeeAttendance /></Guard> } />
           </Route>
 
-          <Route path="friends/:employeeId/edit" element={<Guard role={Role.ADMIN}><AddEmployee /></Guard>} />
-          <Route path="add-employee"             element={<Guard role={Role.ADMIN}><AddEmployee /></Guard>} />
+          <Route path="add-employee"             element={<Guard role={Role.ADMIN}><AddEmployee  /></Guard>} />
+          <Route path="friends/:employeeId/edit" element={<Guard role={Role.ADMIN}><EditEmployee /></Guard>} />
 
           <Route path="*" element={<NotFound />} />
 

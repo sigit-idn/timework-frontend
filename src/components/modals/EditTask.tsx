@@ -1,7 +1,7 @@
-import React, { FormEvent, useState } from "react";
+import React    from "react";
 import ReactDOM from "react-dom";
-import { TaskModel, TaskInput       } from "../../models/task";
-import Task from "../forms/Task";
+import Task     from "../forms/Task";
+import { TaskModel, TaskInput } from "../../models/task";
 
 
 interface EditTaskProps {
@@ -15,8 +15,8 @@ const EditTask: React.FC<EditTaskProps> = ({
   task,
   unmountModal,
 }) => {
-  const updateTask = (body: TaskInput) => {
-    TaskModel.update(task.id, body)
+  const updateTask = ({id, ...body}: TaskInput) => {
+    TaskModel.update(id!, body)
       .then((task) => {
         unmountModal();
         setTasks((tasks: TaskModel[]) => {

@@ -36,5 +36,6 @@ export class EmployeeModel extends BaseModel {
 }
 
 export interface EmployeeInput extends Omit<EmployeeModel, "id" | "tasks"> {
-	password: string;
+	id?      : string;
+	password?: string;
 }

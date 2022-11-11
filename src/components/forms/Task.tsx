@@ -1,19 +1,17 @@
-import React, { FormEvent, useState } from "react";
-import { TaskInput, TaskModel       } from "../../models/task";
+import React, {  useState     } from "react";
+import { TaskInput, TaskModel } from "../../models/task";
 
 
-interface AddTaskProps {
-  name?          : string;
-  task?          : TaskModel;
-  setTasks?      : React.Dispatch<React.SetStateAction<TaskModel[]>>;
-  unmount        : () => void;
-  submit         : (body: TaskInput) => void;
+interface TaskFormProps {
+  name?     : string;
+  task?     : TaskModel;
+  unmount   : () => void;
+  submit    : (body: TaskInput) => void;
 }
 
-const Task: React.FC<AddTaskProps> = ({ 
+const Task: React.FC<TaskFormProps> = ({ 
   name,
   task,
-  setTasks,
   unmount,
   submit,
 }) => {
@@ -42,7 +40,12 @@ const Task: React.FC<AddTaskProps> = ({
         >
           <div>
             <h1 className="text-3xl text-center mb-4 cursor-pointer">
-              {name ? "Give task to " + name : "Create A Task"}
+              {name 
+                ? `Give ${name} a task`
+                : task 
+                  ? "Edit task"
+                  : "Add a task"
+              }
             </h1>
           </div>
           <div className="space-y-4">
@@ -54,6 +57,7 @@ const Task: React.FC<AddTaskProps> = ({
                 required
                 placeholder="Task Title"
                 onChange={inputChange}
+                value={body.title}
                 className="block text-sm py-3 px-4 rounded-lg w-full border outline-none"
               />
             </div>
@@ -65,6 +69,7 @@ const Task: React.FC<AddTaskProps> = ({
                 required
                 placeholder="Deadline"
                 onChange={inputChange}
+                value={body.deadline?.format("yyyy-mm-ddThh:ii")}
                 className="block text-sm py-3 px-4 rounded-lg w-full border outline-none"
               />
             </div>
@@ -74,6 +79,7 @@ const Task: React.FC<AddTaskProps> = ({
                 name="description"
                 placeholder="Task Description"
                 onChange={inputChange}
+                value={body.description}
                 className="block text-sm py-3 px-4 rounded-lg w-full border outline-none"
               ></textarea>
             </div>

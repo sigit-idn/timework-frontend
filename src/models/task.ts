@@ -9,8 +9,8 @@ export class TaskModel extends BaseModel {
 		public employeeId?: string,
 		public reportId?  : string,
 		public isWorking? : boolean,
-		public deadline   : Date    = new Date(),
-		public description: string  = "",
+		public deadline   : Date = new Date(),
+		public description: string = "",
 		public taskStart? : Date,
 		public taskEnd?   : Date
 	) {
@@ -52,4 +52,6 @@ export class TaskModel extends BaseModel {
 	}
 }
 
-export type TaskInput = Omit<TaskModel, "id" | "isOverdue" | "isLessThan3Days">
+export interface TaskInput extends Omit<TaskModel, "id" | "isOverdue" | "isLessThan3Days"> {
+	id?: string
+}

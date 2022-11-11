@@ -7,8 +7,9 @@ import {
   UserPlus,
 } from "@geist-ui/react-icons";
 import React from "react";
+import { useSelector } from "react-redux";
 
-import { logout } from "../../auth/logout";
+import { Auth } from "../../auth";
 import SideLink from "./SideLink";
 
 interface SidebarProps {
@@ -20,6 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   isSidebarOpen,
   setIsSidebarOpen,
 }) => {
+  const role = useSelector((state: any) => state.auth.role);
 
   return (
     <>
@@ -76,7 +78,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             title="Friends"
           />
 
-          { /admin/.test(String(localStorage.getItem("role"))) && (
+          { /admin/.test(role) && (
             <SideLink
               to="/add-employee"
               icon={<UserPlus />}
@@ -98,7 +100,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           <span
             className="flex items-center mt-4 py-2 px-6 text-gray-500 hover:bg-gray-700 hover:bg-opacity-25 hover:text-gray-100"
-            onClick={logout}
+            onClick={Auth.logout}
           >
             <LogOut />
             <span className="mx-3 cursor-pointer">Logout</span>

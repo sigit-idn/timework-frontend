@@ -1,27 +1,29 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useNavigate                                        } from "react-router-dom";
-import { login                                              } from "../../auth/login";
-import { logout                                             } from "../../auth/logout";
+import { useNavigate } from "react-router-dom";
+import { Auth        } from "../../auth";
+import { useDispatch } from "react-redux";
+import { login       } from "../../redux/features/auth";
 
 
 interface Credentials {
-  email: string;
+  email   : string;
   password: string;
 }
 
 const Login: React.FC = () => {
-  const navigate = useNavigate();
-
   const [input, setInput] = useState<Credentials>({} as Credentials);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error] = useState(sessionStorage.getItem("authError"));
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handlerChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [event.target.name]: event.target.value });
   };
 
   useEffect(() => {
-    logout();
+    Auth.logout();
 
     return () => {
       sessionStorage.removeItem("authError");
@@ -32,7 +34,8 @@ const Login: React.FC = () => {
     event.preventDefault();
     setIsLoggingIn(true);
 
-    login(input).then(() => {
+    Auth.login(input).then((data) => {
+      dispatch(login(data));
       navigate("/");
 
       setIsLoggingIn(false);

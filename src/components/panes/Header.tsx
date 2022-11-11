@@ -1,15 +1,24 @@
-import React, {  useContext, useEffect, useState } from "react";
-import { WorkingTaskContext                             } from "../../config/contexts";
+import React, {  useEffect, useState } from "react";
+import { TaskModel                   } from "../../models/task";
+import { useSelector, useDispatch    } from "react-redux";
+import { setWorkingTask              } from "../../redux/features/workingTask";
 
-interface Props {
+interface HeaderProps {
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Header: React.FC<Props> = ({ setSidebarOpen }) => {
+const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
   const [ clock, setClock ] = useState<Date>(new Date());
-  const { workingTask } = useContext(WorkingTaskContext);
+  const workingTask         = useSelector(({workingTask}: any) => workingTask.title);
+  const dispatch            = useDispatch();
 
   useEffect(() => {
+    TaskModel.getWhere({ isWorking: "true" })
+      .then(([{title}]) => {
+        dispatch(setWorkingTask({title}));
+      })
+      .catch(console.error);
+
     const tickInterval = setInterval(() => {
       setClock(new Date());
     }, 1000);

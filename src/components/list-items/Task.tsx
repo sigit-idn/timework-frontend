@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from "react";
 import { useLocation                  } from "react-router";
+import { useDispatch                  } from "react-redux";
 import { TaskModel                    } from "../../models/task";
+import { setWorkingTask               } from "../../redux/features/workingTask";
 
 import EditTask from "../modals/EditTask";
 
@@ -15,9 +17,8 @@ const Task: React.FC<TaskProps> = ({
   setTasks,
 }) => {
   const [ isEditingTask, setIsEditingTask ] = useState(false);
-
   const { pathname } = useLocation();
-
+  const dispatch = useDispatch();
   
   const deleteTask = () => {
     if (window.confirm("Are you sure to delete?")) {
@@ -40,6 +41,8 @@ const Task: React.FC<TaskProps> = ({
 
         return newTasks;
       });
+
+      dispatch(setWorkingTask(task));
     });
   };
   
@@ -84,7 +87,7 @@ const Task: React.FC<TaskProps> = ({
               {task.description}
             </p>
           </div>
-          {/friend/.test(pathname) ? null : (
+          {!/friend/.test(pathname) && (
             <div className="flex justify-between text-center items-center pt-3 text-xs text-white font-medium">
               <button
                 className="cursor-pointer mr-1 px-1 py-1 w-1/4 rounded bg-red-500 hover:bg-red-600"

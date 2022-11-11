@@ -9,7 +9,6 @@ const PostponeTask = ({
   const [body, setBody] = useState({
     title,
     description,
-    task_start: localStorage.getItem("task_start"),
     task_end: new Date(),
   });
 

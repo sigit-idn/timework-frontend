@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft                } from '@geist-ui/react-icons';
 
 
-
 const BackToFriendList: React.FC<{ name: string }> = ({ name }) => {
 	const navigate = useNavigate();
 	const { pathname } = useLocation();

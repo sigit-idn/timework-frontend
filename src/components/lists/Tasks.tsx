@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { WorkingTaskContext                     } from "../../config/contexts";
-import { TaskModel                              } from "../../models/task";
+import React, { useEffect, useState } from "react";
+import { TaskModel                  } from "../../models/task";
 
 import Task             from "../list-items/Task";
 import AddTask          from "../modals/AddTask";
@@ -13,9 +12,7 @@ interface TasksProps {
 
 const Tasks: React.FC<TasksProps> = ({ employeeId, state }) => {
 	const [ modalShown, setModalShown ] = useState(false);
-	const { setWorkingTask            } = useContext(WorkingTaskContext);
-
-  const [tasks, setTasks] = useState<TaskModel[]>([]);
+  const [ tasks, setTasks ] = useState<TaskModel[]>([]);
 
   useEffect(() => {
     const where: Record<string, string> = employeeId 
@@ -24,21 +21,7 @@ const Tasks: React.FC<TasksProps> = ({ employeeId, state }) => {
 
     TaskModel.getWhere(where).then((tasks) => setTasks(tasks));
   }, []);
-  
-	useEffect(() => {
-    if (!tasks.length) {
-			return;
-		}
 
-    const workingTask = tasks.find(({ isWorking }) => isWorking);
-
-    if (!workingTask || !setWorkingTask) {
-			return;
-		}
-    
-    setWorkingTask(workingTask);
-  }, [tasks]);
-	
 	return (
 		<section>
 			{ state 
@@ -49,10 +32,7 @@ const Tasks: React.FC<TasksProps> = ({ employeeId, state }) => {
 			<ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-3 gap-3">
 			{tasks
 				?.map(
-					(
-						task: TaskModel,
-						i: number
-					) => (
+					(task: TaskModel, i: number) => (
 						<Task
 							key={i}
 							task={task}

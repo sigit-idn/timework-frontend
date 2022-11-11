@@ -1,40 +1,31 @@
 import { handleFetchResponse } from "../utils/handleFetchResponse"
 
 
-interface ChildStatic<T extends BaseModel> {
-	new (...args: any[]): T;
-	resourcePath: string;
-	fromJson(json: Record<string, keyof T>): T;
+interface ChildClass<T extends BaseModel> {
+	new (...args: any[]): T;                    // constructor
+	resourcePath: string;                       // static property
+	fromJson(json: Record<string, keyof T>): T; // static method
 }
 
 export abstract class BaseModel {
-	protected static readonly baseUrl: string = process.env.REACT_APP_API_URL ?? "http://localhost:3000"
-	protected static readonly options: RequestInit = {
-		credentials: "include",
-		headers: {
-			"Content-Type": "application/json"
-		}
-	}
-
-	constructor(
-		public id: string = "",
-	) { }
-
 	protected static async _fetch(
 		method: "GET" | "POST" | "PUT" | "DELETE",
 		path: string,
 		params?: Record<string, string>,
 		body?: Record<string, any>
 	): Promise<Record<string, any>> {
-		const url = new URL(`${BaseModel.baseUrl}/${path}`)
+		const url = new URL(`${process.env.REACT_APP_API_URL}/${path}`)
 
 		if (params) {
 			Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 		}
 
 		const res = await fetch(url.toString(), {
-			...BaseModel.options,
 			method,
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json"
+			},
 			body: body ? JSON.stringify(body) : undefined
 		})
 
@@ -42,7 +33,7 @@ export abstract class BaseModel {
 	}
 	
 	static async getAll<T extends BaseModel>(
-		this: ChildStatic<T>
+		this: ChildClass<T>
 	): Promise<T[]> {
 		const data = await BaseModel._fetch("GET", this.resourcePath)
 		
@@ -50,7 +41,7 @@ export abstract class BaseModel {
 	}
 
 	static async get<T extends BaseModel>(
-		this: ChildStatic<T>,
+		this: ChildClass<T>,
 		id: string
 	): Promise<T> {
 		const data = await BaseModel._fetch("GET", `${this.resourcePath}/${id}`)
@@ -59,7 +50,7 @@ export abstract class BaseModel {
 	}
 
 	static async getWhere<T extends BaseModel>(
-		this: ChildStatic<T>,
+		this: ChildClass<T>,
 		params: Record<string, string>
 	): Promise<T[]> {
 		const data = await BaseModel._fetch("GET", this.resourcePath, params)
@@ -68,7 +59,7 @@ export abstract class BaseModel {
 	}
 
 	static async create<T extends BaseModel>(
-		this: ChildStatic<T>,
+		this: ChildClass<T>,
 		body: Record<string, any>
 	): Promise<T> {
 		const data = await BaseModel._fetch("POST", this.resourcePath, undefined, body)
@@ -77,7 +68,7 @@ export abstract class BaseModel {
 	}
 
 	static async update<T extends BaseModel>(
-		this: ChildStatic<T>,
+		this: ChildClass<T>,
 		id: string,
 		body: Record<string, any>
 	): Promise<T> {
@@ -87,7 +78,7 @@ export abstract class BaseModel {
 	}
 
 	static async delete<T extends BaseModel>(
-		this: ChildStatic<T>,
+		this: ChildClass<T>,
 		id: string
 	): Promise<T> {
 		const data = await BaseModel._fetch("DELETE", `${this.resourcePath}/${id}`)

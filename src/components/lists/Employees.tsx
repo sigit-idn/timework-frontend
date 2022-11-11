@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { EmployeeModel              } from '../../models/employee';
+import { useSelector } from "react-redux";
 
 import Employee from '../list-items/Employee';
+
 
 const Employees: React.FC = () => {
 	const [employees, setEmployees] = useState<EmployeeModel[]>([]);
 	const [isAdmin, setIsAdmin] = useState(false);
+	const role = useSelector((state: any) => state.auth.role);
 
 	useEffect(() => {
-		setIsAdmin(/admin/i.test(localStorage.getItem('role') ?? ''));
+		setIsAdmin(/admin/i.test(role));
 
 		EmployeeModel.getAll().then(setEmployees);
 	}, []);

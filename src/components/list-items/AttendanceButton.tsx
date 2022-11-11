@@ -50,13 +50,6 @@ const AttendanceButton: React.FC<AttendanceButtonProps> = ({
         });
         
         setIsClicked(true);
-
-        console.log("after attend",
-          { key, title, attendance, isClicked, value2: attendance[key]});
-
-        if (title === "Work Start") {
-          localStorage.setItem("taskStart", new Date().format("yyyy-mm-dd hh:ii:ss"));
-        }
       });
   }, []);
 

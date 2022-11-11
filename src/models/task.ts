@@ -8,7 +8,7 @@ export class TaskModel extends BaseModel {
 		public title      : string,
 		public employeeId?: string,
 		public reportId?  : string,
-		public isWorking  : boolean = false,
+		public isWorking? : boolean,
 		public deadline   : Date    = new Date(),
 		public description: string  = "",
 		public taskStart? : Date,

@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate                                        } from "react-router-dom";
-import { login                                              } from "../auth/login";
-import { logout                                             } from "../auth/logout";
+import { login                                              } from "../../auth/login";
+import { logout                                             } from "../../auth/logout";
 
 
 interface Credentials {

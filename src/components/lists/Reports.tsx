@@ -1,38 +1,31 @@
-import { ArrowLeft                  } from "@geist-ui/react-icons";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate   } from "react-router-dom";
-import { ReportModel                } from "../models/report";
+import { ReportModel                } from "../../models/report";
 
-import Report from "../components/list-items/Report";
+import Report from "../list-items/Report";
+import BackToFriendList from "../buttons/BackToFriendList";
 
 
-const Reports: React.FC = () => {
-  const navigate = useNavigate();
-  const { state } = useLocation();
-  const [ userId, setUserId ] = useState("");
+interface ReportsProps {
+	employeeId?: string;
+	state?: {
+		name: string;
+	}
+}
+
+
+const Reports: React.FC<ReportsProps> = ({ employeeId, state }) => {
   const [ reports, setReports ] = useState<ReportModel[]>([]);
   const [ month, setMonth ] = useState(new Date().format("yyyy-mm"));
 
   useEffect(() => {
-    ReportModel.getWhere({ employeeId: userId, month }).then(setReports);
+		const where: Record<string, string> = employeeId ? { employeeId, month } : { month };
+
+    ReportModel.getWhere(where).then(setReports);
   }, [month]);
 
   return (
     <div className="flex flex-col mt-3">
-      { userId && (
-        <div className="flex items-center mb-5">
-          <button
-            className="rounded-full shadow hover:shadow-md bg-white p-1"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft />
-          </button>
-          <h1 className="text-xl ml-3 font-semibold">
-            {state?.name}
-            <span className="font-light">&apos;s Reports</span>
-          </h1>
-        </div>
-      ) }
+      { state?.name && <BackToFriendList name={state.name} /> }
 
       <label
         htmlFor="dateInput"

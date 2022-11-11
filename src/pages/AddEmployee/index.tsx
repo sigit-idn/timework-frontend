@@ -1,7 +1,7 @@
 import { ArrowLeft                               } from "@geist-ui/react-icons";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams     } from "react-router-dom";
-import { EmployeeInput, EmployeeModel            } from "../models/employee";
+import { EmployeeInput, EmployeeModel            } from "../../models/employee";
 
 
 const AddEmployee: React.FC = () => {

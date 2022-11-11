@@ -42,13 +42,10 @@ const Employees: React.FC = () => {
 
 						<tbody className="bg-white">
 							{employees.map(
-								({ name, tasks, position, id }: EmployeeModel) => (
+								(employee: EmployeeModel) => (
 									<Employee 
-										key={id}
-										name={name}
-										tasks={tasks}
-										position={position}
-										id={id}
+										key={employee.id}
+										employee={employee}
 										isAdmin={isAdmin}
 									/>
 								)

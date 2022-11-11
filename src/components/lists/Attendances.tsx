@@ -1,9 +1,8 @@
-import { ArrowLeft                               } from "@geist-ui/react-icons";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { useNavigate                             } from "react-router-dom";
 import { AttendanceModel                         } from "../../models/attendance";
 
-import Attendance from "../list-items/Attendance";
+import Attendance       from "../list-items/Attendance";
+import BackToFriendList from "../buttons/BackToFriendList";
 
 interface AttendanceProps {
   employeeId?: string;
@@ -13,7 +12,6 @@ interface AttendanceProps {
 }
 
 const Attendances: React.FC<AttendanceProps> = ({ employeeId, state }) => {
-  const navigate = useNavigate();
   const [ attendances, setAttendances ] = useState<AttendanceModel[]>([]);
   const [ month, setMonth ] = useState(new Date().format("yyyy-mm"));
 
@@ -30,20 +28,7 @@ const Attendances: React.FC<AttendanceProps> = ({ employeeId, state }) => {
   return (
     <>
       <div className="flex flex-col mt-2">
-        {employeeId && (
-          <div className="flex items-center mb-5">
-            <button
-              className="rounded-full shadow hover:shadow-md bg-white p-1"
-              onClick={() => navigate(-1)}
-            >
-              <ArrowLeft />
-            </button>
-            <h1 className="text-xl ml-3 font-semibold">
-              {state?.name}
-              <span className="font-light">&apos;s Attendances</span>
-            </h1>
-          </div>
-        )}
+      { state?.name && <BackToFriendList name={state.name} /> }
 
         <label
           htmlFor="dateInput"

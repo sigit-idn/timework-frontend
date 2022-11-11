@@ -1,8 +1,8 @@
 import { useLocation, useParams     } from "react-router-dom";
 import React  from "react";
-import Loader from "../components/others/Loader";
+import Loader from "../../components/etc/Loader";
 
-const Attendances = React.lazy(() => import("../components/lists/Attendances"));
+const Attendances = React.lazy(() => import("../../components/lists/Attendances"));
 
 
 const EmployeeAttendance: React.FC = () => {

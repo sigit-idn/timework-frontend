@@ -1,8 +1,8 @@
 import React  from "react";
-import Loader from "../components/others/Loader";
+import Loader from "../../components/etc/Loader";
 
-const Tasks             = React.lazy(() => import("../components/lists/Tasks"));
-const AttendanceButtons = React.lazy(() => import("../components/lists/AttendanceButtons"));
+const Tasks             = React.lazy(() => import("../../components/lists/Tasks"));
+const AttendanceButtons = React.lazy(() => import("../../components/lists/AttendanceButtons"));
 
 
 const Dashboard: React.FC = () => {

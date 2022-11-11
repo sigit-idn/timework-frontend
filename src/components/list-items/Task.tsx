@@ -6,13 +6,13 @@ import EditTask from "../modals/EditTask";
 
 
 interface TaskProps {
-  task            : TaskModel;
-  setTasks        : React.Dispatch<React.SetStateAction<TaskModel[]>>;
+  task         : TaskModel;
+  setTasks     : React.Dispatch<React.SetStateAction<TaskModel[]>>;
 }
 
 const Task: React.FC<TaskProps> = ({
   task,
-  setTasks
+  setTasks,
 }) => {
   const [ isEditingTask, setIsEditingTask ] = useState(false);
 
@@ -119,9 +119,9 @@ const Task: React.FC<TaskProps> = ({
       </div>
       {isEditingTask && (
         <EditTask
-          setIsEditingTask={setIsEditingTask}
           setTasks={setTasks}
           task={task}
+          unmountModal={() => setIsEditingTask(false)}
         />
       )}
     </li>
